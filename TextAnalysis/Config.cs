@@ -26,6 +26,7 @@ namespace TextAnalysis
         public bool UseCount { get; private set; } = false;
         public bool KeepSpace { get; private set; } = true;
         public bool RunWordBreak { get; private set; } = false;
+        public bool UseExistingDict { get; private set; } = true;
 
         public string PythonPath { get; private set; } = string.Empty;
 

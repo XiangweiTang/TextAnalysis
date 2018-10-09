@@ -35,7 +35,10 @@ namespace TextAnalysis
             TestTextList = dataArray.ArrayTake(TestCount);
             DevTextList = dataArray.ArraySkip(TestCount).ArrayTake(DevCount);
             TrainTextList = dataArray.ArraySkip(TestCount + DevCount);
-            BuildDict();
+            if (Cfg.UseExistingDict)
+                UseExistingDict();
+            else
+                BuildDict();
             Output();
         }
 
@@ -62,23 +65,25 @@ namespace TextAnalysis
                 .Select(x =>new Sample { Tag = tag, Content = Regex.Replace(x, "\\s+", Replace).Trim() });
         }
 
-        //private void BuildDict()
-        //{
-        //    int startIndex = 2 + Cfg.PreserveOtherThanUnkPad;
-        //    TextToDigitDict = TrainTextList
-        //        .SelectMany(x => x.Content.Split(' '))
-        //        .GroupBy(x => x)
-        //        .OrderByDescending(x => x.Count())
-        //        .Take(Cfg.MaxVocab)
-        //        .ToDictionary(x => x.Key, x => startIndex++);
-        //    TextToDigitDict.Add("<UNK>", 0);
-        //    TextToDigitDict.Add("<PAD>", 0);
-        //}
-
-            private void BuildDict()
+        private void BuildDict()
         {
             int startIndex = 2 + Cfg.PreserveOtherThanUnkPad;
-            TextToDigitDict = File.ReadAllLines(@"D:\private\TextClassification\dict.txt")
+            TextToDigitDict = TrainTextList
+                .SelectMany(x => x.Content.Split(' '))
+                .GroupBy(x => x)
+                .OrderByDescending(x => x.Count())
+                .Take(Cfg.MaxVocab)
+                .ToDictionary(x => x.Key, x => startIndex++.ToString());
+            TextToDigitDict.Add("<UNK>", "0");
+            TextToDigitDict.Add("<PAD>", "1");
+            OutputDict();
+        }
+
+        private void UseExistingDict()
+        {
+            int startIndex = 2 + Cfg.PreserveOtherThanUnkPad;
+            string t2dPath = Path.Combine(Cfg.PostProcessFolder, "TextToDigit.dict");
+            TextToDigitDict = File.ReadAllLines(t2dPath)
                 .ToDictionary(x => x.Split('\t')[0], x => x.Split('\t')[1]);
         }
 

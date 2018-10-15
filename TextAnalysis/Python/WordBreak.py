@@ -10,7 +10,7 @@ output_file=open(output_path,"w+",encoding="utf-8")
 
 for line in input_file:
 	seg_list=jieba.cut(line,cut_all=False)
-	str=(" ".join(seg_list))
-	output_file.write(str)
+	s=(" ".join(seg_list))
+	output_file.write("%s\n"%s)
 
 output_file.close()

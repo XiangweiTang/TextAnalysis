@@ -28,6 +28,8 @@ namespace TextAnalysis
         public static T[] ArraySkip<T>(this T[] inputArray, int skip)
         {
             int inputLength = inputArray.Length;
+            if (skip < 0)
+                skip = 0;
             skip = Math.Min(skip, inputLength);
             T[] outputArray = new T[inputLength - skip];
             Array.Copy(inputArray, skip, outputArray, 0, inputLength - skip);
@@ -37,20 +39,26 @@ namespace TextAnalysis
         public static T[] ArrayTake<T>(this T[] inputArray, int take)
         {
             int inputLength = inputArray.Length;
+            if (take < 0)
+                take = 0;
             take = Math.Min(take, inputLength);
             T[] outputArray = new T[take];
             Array.Copy(inputArray, outputArray, take);
             return outputArray;
         }
 
-        public static IEnumerable<Sample> GetSamples(string folderPath)
+        public static T[] ArrayRange<T>(this T[] inputArrary, int index, int count)
         {
-            foreach(string path in Directory.EnumerateDirectories(folderPath))
-            {
-                string tag = path.Split('\\').Last();
-                foreach (string filePath in Directory.EnumerateFiles(path))
-                    yield return new Sample { Tag = tag, Content = filePath };
-            }
+            int inputLength = inputArrary.Length;
+            if (index < 0)
+                index = 0;
+            index = Math.Min(index, inputLength);
+            if (count < 0)
+                count = 0;
+            count = Math.Min(count, inputLength - index);
+            T[] outputArray = new T[count];
+            Array.Copy(inputArrary, index, outputArray, 0, count);
+            return outputArray;
         }
 
         public static void RunFile(string filePath, string args, string workDir="", bool newWindow = false)
@@ -64,6 +72,18 @@ namespace TextAnalysis
 
             proc.Start();
             proc.WaitForExit();
+        }
+
+        public delegate void ProcessFile(string inputFilePath, string outputFilePath);
+        public static void FolderTransport(string inputFolder, string outputFolder, ProcessFile pf)
+        {
+            foreach(string inputFilePath in Directory.EnumerateFiles(inputFolder))
+            {
+                Console.WriteLine("Processing " + inputFilePath);
+                string fileName = inputFilePath.Split('\\').Last();
+                string outputFilePath = Path.Combine(outputFolder, fileName);
+                pf(inputFilePath, outputFilePath);
+            }
         }
     }
 }

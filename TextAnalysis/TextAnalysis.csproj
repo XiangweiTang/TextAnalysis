@@ -45,18 +45,18 @@
   <ItemGroup>
     <Compile Include="Common.cs" />
     <Compile Include="Config.cs" />
+    <Compile Include="Constants.cs" />
+    <Compile Include="DataContentCleanUp.cs" />
+    <Compile Include="Logger.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Sample.cs" />
-    <Compile Include="TextPreProcessing.cs" />
-    <Compile Include="TextToDigit.cs" />
-    <Compile Include="WordBreak.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Python\WordBreak.py" />
+    <Content Include="Python\JiebaWordBreak.py" />
+    <Content Include="Python\Word2Vec_all.py" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

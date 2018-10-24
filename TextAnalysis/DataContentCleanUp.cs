@@ -94,8 +94,9 @@ namespace TextAnalysis
         private void RunJiebaWordBreak(string inputFilePath, string outputFilePath)
         {
             Console.WriteLine("Processing " + inputFilePath);
-            string args = string.Join(" ", Path.Combine(Cfg.PythonFolder, Constants.JiebaWbrExternalPath), inputFilePath, outputFilePath);
-            Common.RunFile(Cfg.PythonPath, args);
+            string pythonPath = Cfg.PythonPath;
+            string scriptPath = Path.Combine(Cfg.PythonFolder, Constants.JiebaWbrInternalPath);
+            Common.RunWordBreak(inputFilePath, outputFilePath, pythonPath, scriptPath);                        
         }
 
 

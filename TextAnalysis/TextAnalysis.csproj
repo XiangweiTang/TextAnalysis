@@ -47,16 +47,26 @@
     <Compile Include="Config.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="DataContentCleanUp.cs" />
+    <Compile Include="Demo.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <EmbeddedResource Include="Data\PosNeg_model.h5" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Python\JiebaWordBreak.py" />
-    <Content Include="Python\Word2Vec_all.py" />
+    <EmbeddedResource Include="Python\JiebaWordBreak.py" />
+    <EmbeddedResource Include="Data\StandardTest.txt" />
+    <EmbeddedResource Include="Python\Word2Vec.py" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Python\BuildModel.py" />
+    <Content Include="Python\DataPrepare.py" />
+    <Content Include="Python\Evaluate.py" />
+    <Content Include="Python\Predict.py" />
+    <Content Include="Python\RestoreModel.py" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

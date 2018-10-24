@@ -10,5 +10,6 @@ namespace TextAnalysis
     {
         public const string JiebaWbrInternalPath = "TextAnalysis.Python.JiebaWordBreak.py";
         public const string JiebaWbrExternalPath = "JiebaWordBreak.py";
+        public const string Divider = "======================================================";
     }
 }

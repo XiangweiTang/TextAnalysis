@@ -20,46 +20,11 @@ import tensorflow as tf
 
 from tensorflow.contrib.tensorboard.plugins import projector
 
-current_path=os.path.dirname(os.path.realpath(sys.argv[0]))
-parser=argparse.ArgumentParser()
-parser.add_argument(
-	'--log_dir',
-	type=str,
-	default=os.path.join(current_path,'log'),
-	help='The log directory for TensorBoard summaries'	
-)
-
-FLAGS, unparsed=parser.parse_known_args()
-
-if not os.path.exists(FLAGS.log_dir):
-	os.makedirs(FLAGS.log_dir)
-
-#	Download data.
-# url='http://mattmahoney.net/dc/'
-
-# def maybe_download(filename, expected_bytes):
-# 	"""Download a file if not present, and make sure it's the right size."""
-# 	local_filename=os.path.join(gettempdir(),filename)
-# 	if not os.path.exists(local_filename):
-# 		local_filename,_=urllib.request.urlretrieve(url+filename,local_filename)
-# 		statinfo=os.stat(local_filename)
-# 		if(statinfo.st_size==expected_bytes):
-# 			print('Found and verified.', filename)
-# 		else:
-# 			print(statinfo.st_size)
-# 			raise Exception('Fail to verify '+local_filename+'. Can you get to it with a browser?')
-# 	return local_filename
-
-# filename=maybe_download('text8.zip', 31344016)
-
-def read_data(filename):
-	with zipfile.ZipFile(filename) as f:
-		data=tf.compat.as_str(f.read(f.namelist()[0])).split()
-	return data
-
+dict_path="dict.txt"
 input_file_name="total.wbr"
 imageName="total.png"
 similar_path="similar.txt"
+test_path="StandardTest.txt"
 
 def read_to_word(filename):
 	with open(filename,'r',encoding='UTF-8') as f:
@@ -68,11 +33,10 @@ def read_to_word(filename):
 				yield word
 
 vocabulary=list(read_to_word(input_file_name))
-print('Data size ', len(vocabulary))
 
 #	Build dictionary, replace rare words with UNK.
 vocabulary_size=50000
-num_steps=100001
+num_steps=200001
 
 def build_dataset(words, n_words):
 	count=[['UNK',-1]]
@@ -81,31 +45,33 @@ def build_dataset(words, n_words):
 	for word, _ in count:
 		dictionary[word]=len(dictionary)
 	data=list()
-	unk_count=0
 	for word in words:
 		index=dictionary.get(word,0)
-		if index==0:
-			unk_count+=1
 		data.append(index)
-	count[0][1]=unk_count
-	reversed_dictionary=dict(zip(dictionary.values(),dictionary.keys()))
-	return data, count, dictionary, reversed_dictionary
+	return data
+
+def build_dict(dict_path):
+	with open(dict_path,'r',encoding='UTF-8') as f:
+		dictionary={}
+		reversed_dictionary={}
+		for line in f:
+			word=line.split()[0]
+			code=int(line.split()[1])
+			dictionary[word]=code
+			reversed_dictionary[code]=word
+	return dictionary, reversed_dictionary
 
 #	data: code of the words.
-#	count: word->count
-#	dictionary: word->code.
-#	reversed_dictionary: code->word
-data, count, dictionary, reversed_dictionary=build_dataset(vocabulary,vocabulary_size)
-del vocabulary
+data=build_dataset(vocabulary,vocabulary_size)
+dictionary, reversed_dictionary=build_dict(dict_path)
+
+
 
 with open("dict.txt","w",encoding='UTF-8') as f:
 	for key in dictionary:
 		f.write("{}\t{}\n".format(key,dictionary[key]))
 
-
-print('Most common words (+UNK) ',count[:5])
-print('Sample data ',data[:10],[reversed_dictionary[i] for i in data[:10]])
-
+		
 data_index=0
 
 #	Generate training batch for the skip gram model.
@@ -138,9 +104,6 @@ def generate_batch(batch_size, num_skips, skip_window):
 
 batch, labels=generate_batch(batch_size=8,num_skips=2,skip_window=1)
 
-for i in range(8):
-	print(batch[i], reversed_dictionary[batch[i]],'->',labels[i,0],reversed_dictionary[labels[i,0]])
-
 batch_size=128
 embedding_size=128
 skip_window=1
@@ -149,9 +112,15 @@ num_sampled=64
 
 valid_size=10
 valid_window=100
-ex_list=["待遇","薪资","入职","发展","升职","加薪","项目","公司","考虑","水平"]
-ex=np.array(list( map(lambda x:dictionary[x],ex_list)),dtype=np.int32)
-valid_examples=np.random.choice(valid_window,valid_size,replace=False)
+
+def read_test(test_path):
+	with open(test_path,'r', encoding= 'UTF-8') as f:
+		for line in f:
+			yield dictionary[line[:-1]]
+
+ex_list=list(read_test(test_path))
+valid_size=len(ex_list)
+ex=np.array(ex_list,dtype=np.int32)
 graph=tf.Graph()
 
 with graph.as_default():
@@ -182,7 +151,7 @@ with graph.as_default():
 	tf.summary.scalar('loss',loss)
 
 	with tf.name_scope('optimizer'):
-		optimizer=tf.train.GradientDescentOptimizer(0.8).minimize(loss)
+		optimizer=tf.train.GradientDescentOptimizer(0.2).minimize(loss)
 	
 	norm=tf.sqrt(tf.reduce_sum(tf.square(embeddings),1,keepdims=True))
 	normalized_embeddings=embeddings/norm
@@ -198,8 +167,6 @@ with graph.as_default():
 
 
 with tf.Session(graph=graph) as session:
-	writer=tf.summary.FileWriter(FLAGS.log_dir,session.graph)
-
 	init.run()
 
 	print('Initialized')
@@ -218,96 +185,27 @@ with tf.Session(graph=graph) as session:
 		)
 		average_loss+=loss_val
 
-		writer.add_summary(summary,step)
-
-		if step==(num_steps-1):
-			writer.add_run_metadata(run_metadata, 'step%d'%step)
-
-
 		if step%2000==0:
 			if(step>0):
 				average_loss/=2000
-			print('Average loss ate step ', step, ': ', average_loss)
+			print('Average loss at step ', step, ': ', average_loss)
 			average_loss=0
 
-		if step%10000==0:
-			sim=similarity.eval()
-			for i in xrange(valid_size):
-				valid_word=reversed_dictionary[ex[i]]
-				top_k=8
-				nearest=(-sim[i, :]).argsort()[1:top_k+1]
-				log_str='Nearst to  %s: '%valid_word
-				for k in xrange(top_k):
-					close_word=reversed_dictionary[nearest[k]]
-					log_str='%s %s, '%(log_str,close_word)
-				print(log_str)
 	results=[]
-	final_sim=similarity.eval()	
+	final_sim=similarity.eval()
 
 	for i in xrange(valid_size):
 		valid_word=reversed_dictionary[ex[i]]
-		top_k=10
+		top_k=20
 		nearest=(-final_sim[i,:]).argsort()[1:top_k+1]
+		similars= list( map(lambda x:final_sim[i,x],nearest))
 		line=valid_word
 		for k in xrange(top_k):
 			close_word=reversed_dictionary[nearest[k]]
-			line="%s\t%s"%(line,close_word)
+			line="%s\t%s %s"%(line,close_word, similars[k])
 		results.append(line)
 
 	with open(similar_path,'w+',encoding="UTF-8") as f:
 		for result in results:
 			f.write("%s\n"%result)
 	f.close()
-
-
-	final_embeddings=normalized_embeddings.eval()	
-
-	with open(FLAGS.log_dir+'/metadata.tsv','w', encoding="UTF-8") as f:
-		for i in xrange(vocabulary_size):
-			f.write(reversed_dictionary[i]+'\n')
-	
-	saver.save(session,os.path.join(FLAGS.log_dir, 'model.ckpt'))
-
-	config=projector.ProjectorConfig()
-	embedding_conf=config.embeddings.add()
-	embedding_conf.tensor_name=embeddings.name
-	embedding_conf.metadata_path=os.path.join(FLAGS.log_dir, 'metadata.tsv')
-	projector.visualize_embeddings(writer,config)
-
-writer.close()
-
-
-# def plot_with_labels(low_dim_embs, labels, filename):
-# 	assert low_dim_embs.shape[0]>=len(labels), 'More labels than embeddings'
-# 	plt.figure(figsize=(18,18))
-# 	for i, label in enumerate(labels):
-# 		x,y=low_dim_embs[i,:]
-# 		plt.scatter(x,y)
-# 		plt.annotate(
-# 			label,
-# 			xy=(x,y),
-# 			xytext=(5,2),
-# 			textcoords='offset points',
-# 			ha='right',
-# 			va='bottom'
-# 		)	
-# 	plt.savefig(filename)
-
-# try:
-# 	from sklearn.manifold import TSNE
-# 	import matplotlib.pyplot as plt
-# 	import matplotlib
-
-# 	matplotlib.rcParams['font.family']='SimHei'
-
-# 	tsne=TSNE(
-# 		perplexity=30, n_components=2,init='pca',n_iter=5000,method='exact'
-# 	)
-# 	plot_only=500
-# 	low_dim_embs=tsne.fit_transform(final_embeddings[:plot_only,:])
-# 	labels=[reversed_dictionary[i] for i in xrange(plot_only)]
-# 	plot_with_labels(low_dim_embs,labels,imageName)
-
-# except ImportError as ex:
-# 	print('Please install sklearn, matplotlib and scipy to show embeddings.')
-# 	print(ex)

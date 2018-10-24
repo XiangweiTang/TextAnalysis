@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using System.Diagnostics;
+using System.Reflection;
 
 namespace TextAnalysis
 {
@@ -83,6 +84,36 @@ namespace TextAnalysis
                 string fileName = inputFilePath.Split('\\').Last();
                 string outputFilePath = Path.Combine(outputFolder, fileName);
                 pf(inputFilePath, outputFilePath);
+            }
+        }
+
+        public static void RunWordBreak(string inputFilePath, string outputFilePath, string pythonPath, string scriptPath)
+        {
+            string args = string.Join(" ", scriptPath, inputFilePath, outputFilePath);
+            Common.RunFile(pythonPath, args);
+        }
+
+        public static IEnumerable<string> ReadEmbed(string path)
+        {
+            Assembly asmb = Assembly.GetExecutingAssembly();
+            using(StreamReader sr=new StreamReader(asmb.GetManifestResourceStream(path)))
+            {
+                string line;
+                while ((line = sr.ReadLine()) != null)
+                    yield return line;
+            }
+        }
+
+        public static byte[] GetEmbed(string path)
+        {
+            Assembly asmb = Assembly.GetExecutingAssembly();
+            using(Stream st = asmb.GetManifestResourceStream(path))
+            {
+                int n = Convert.ToInt32(st.Length);
+                using(BinaryReader br=new BinaryReader(st))
+                {
+                    return br.ReadBytes(n);
+                }
             }
         }
     }

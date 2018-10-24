@@ -8,7 +8,10 @@ using System.IO;
 namespace TextAnalysis
 {
     class Config
-    {        
+    {
+        public string SimilarityInputPath { get; private set; } = string.Empty;
+        public string ClassificationInputPath { get; private set; } = string.Empty;
+        public string DemoFolder { get => Path.Combine(WorkFolder, "Demo"); }
         public string InputFolder { get; private set; } = @"D:\public\tmp\Input";
         public string WorkFolder { get; private set; } = @"D:\public\tmp";
         public string PythonFolder { get { return Path.Combine(WorkFolder, "Python"); } }

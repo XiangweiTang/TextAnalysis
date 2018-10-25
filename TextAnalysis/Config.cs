@@ -4,17 +4,29 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using System.Xml;
 
 namespace TextAnalysis
 {
     class Config
     {
-        public string SimilarityInputPath { get; private set; } = string.Empty;
-        public string ClassificationInputPath { get; private set; } = string.Empty;
+        #region Args
+
+        public string SimilarityInputPath { get; private set; } = @"D:\private\TextClassification_Old\Similar_input.txt";        
+        public string ClfInputPath { get; private set; } = @"D:\private\TextClassification_Old\RawTest.txt";
+        public string ClfOutputPath { get; private set; } = @"D:\private\TextClassification_Old\RawTest_result.txt";
+        public string SimilarityOutputPath { get; private set; } = @"D:\public\tmp\simRes.txt";
+        
         public string DemoFolder { get => Path.Combine(WorkFolder, "Demo"); }
-        public string InputFolder { get; private set; } = @"D:\public\tmp\Input";
-        public string WorkFolder { get; private set; } = @"D:\public\tmp";
-        public string PythonFolder { get { return Path.Combine(WorkFolder, "Python"); } }
+        public string DemoSimStandardPath { get => Path.Combine(DemoFolder, "Data", "Python", "Similar.txt"); }
+        public string DemoClfDictPath { get => Path.Combine(DemoFolder, "Data", "Python", "dict.txt"); }
+        public string DemoPythonFolder { get => Path.Combine(DemoFolder, "Data", "Python"); }
+        public string DemoClfModelPath { get => Path.Combine(DemoFolder, "Data", "Python", "PosNeg_Model.h5"); }
+        public string TmpPath { get => Path.Combine(WorkFolder, "Tmp"); }
+
+        public string InputFolder { get; private set; } = string.Empty;
+        public string WorkFolder { get => @".\"; }
+        public string PythonFolder { get { return Path.Combine(WorkFolder, "Data", "Python"); } }
         public string RawFolder { get { return Path.Combine(WorkFolder, "Data", "Raw"); } }
         public string PreProcessFolder { get { return Path.Combine(WorkFolder, "Data", "Pre"); } }
         public string WordBreakFolder { get { return Path.Combine(WorkFolder, "Data", "Wbr"); } }
@@ -43,8 +55,22 @@ namespace TextAnalysis
 
         public string WordBreakType { get; private set; } = "NA";
 
-        public string PythonPath { get; private set; } = string.Empty;
+        public string PythonPath { get; private set; } = @"C:\ProgramData\Anaconda3\python.exe";
 
-        public Config() { KeptIntervals = new List<Tuple<char, char>>() {new Tuple<char, char>( '一','龟')};       }
+        #endregion
+
+        public Config()
+        {
+        }
+
+        public void LoadConfig(string configPath)
+        {
+            XmlDocument xDoc = new XmlDocument();
+            xDoc.Load(configPath);
+            ClfInputPath = xDoc["TextAnalysis"]["Demo"]["TextClassification"]["Input"].Attributes["Path"].Value;
+            ClfOutputPath=xDoc["TextAnalysis"]["Demo"]["TextClassification"]["Output"].Attributes["Path"].Value;
+            SimilarityInputPath= xDoc["TextAnalysis"]["Demo"]["Word2Vector"]["Input"].Attributes["Path"].Value;
+            SimilarityOutputPath= xDoc["TextAnalysis"]["Demo"]["Word2Vector"]["Output"].Attributes["Path"].Value;
+        }
     }
 }

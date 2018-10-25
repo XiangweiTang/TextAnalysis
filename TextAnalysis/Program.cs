@@ -10,6 +10,11 @@ namespace TextAnalysis
     {
         static void Main(string[] args)
         {
+            Config cfg = new Config();
+            Init init = new Init(cfg);
+            Demo d = new Demo(cfg);
+            d.RunClassification();
+            d.RunSimilarity();
         }
     }
 }

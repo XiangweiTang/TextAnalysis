@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<TextAnalysis>
+  <Demo>
+    <TextClassification>
+      <Input Path=""/>
+      <Output Path=""/>
+    </TextClassification>
+    <Word2Vector>
+      <Input Path=""/>
+      <Output Path=""/>
+    </Word2Vector>
+  </Demo>
+</TextAnalysis>

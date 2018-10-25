@@ -93,6 +93,12 @@ namespace TextAnalysis
             Common.RunFile(pythonPath, args);
         }
 
+        public static void RunPredict(string testDataPath, string predictResultPath, string pythonPath, string scriptPath, string workDir)
+        {
+            string args = string.Join(" ", scriptPath, testDataPath, predictResultPath);
+            RunFile(pythonPath, args, workDir);
+        }
+
         public static IEnumerable<string> ReadEmbed(string path)
         {
             Assembly asmb = Assembly.GetExecutingAssembly();
@@ -115,6 +121,11 @@ namespace TextAnalysis
                     return br.ReadBytes(n);
                 }
             }
+        }
+
+        public static string GetFullPath(string relativePath)
+        {
+            return (new FileInfo(relativePath)).FullName;
         }
     }
 }

@@ -10,7 +10,7 @@ namespace TextAnalysis
     {
         static void Main(string[] args)
         {
-            string configPath = args[0];
+            string configPath = args.Length > 0 ? args[0] : "config.xml";
             Config cfg = new Config();
             cfg.LoadConfig(configPath);
             Demo d = new Demo(cfg);

@@ -51,7 +51,7 @@ namespace TextAnalysis
                     groupSum += simR.Item2;
                     resultList.Add(result);
                 }
-                totalSum += groupSum;
+                totalSum += groupSum / group.Count();
                 string groupResult = $"Similarity of group {n++}: {groupSum / group.Count()}.";
                 resultList.Insert(0, groupResult);
                 totalResultList.AddRange(resultList);
@@ -121,6 +121,8 @@ namespace TextAnalysis
 
         public Tuple<string,double> CalcSim(string[] words)
         {
+            if (words.Contains(StandardWord))
+                return new Tuple<string, double>(StandardWord, 1);
             var same = SimDict.Keys.Intersect(words).ToArray();
             if (same.Length == 0)
                 return new Tuple<string, double>("N/A", 0);

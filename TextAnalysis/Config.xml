@@ -1,14 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <TextAnalysis>
   <Demo>
-    <TextClassification Run="false">
-      <Input Path=""/>
-      <Output Path=""/>
+    <TextClassification Run="true">
+      <Input Path="Clf_Test.txt"/>
+      <Output Path="Clf_Result.txt"/>
     </TextClassification>
-    <Word2Vector Run="false">
-      <Input Path=""/>
-      <Output Path=""/>
+    <Word2Vector Run="true">
+      <Input Path="Sim_Test.txt"/>
+      <Output Path="Sim_Result.txt"/>
     </Word2Vector>
   </Demo>
-  <Python Path=""/>
+  <Python Path="C:\Users\tangx\AppData\Local\Programs\Python\Python36\python.exe"/>
 </TextAnalysis>

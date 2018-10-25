@@ -1,11 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <TextAnalysis>
   <Demo>
-    <TextClassification>
+    <TextClassification Run="false">
       <Input Path=""/>
       <Output Path=""/>
     </TextClassification>
-    <Word2Vector>
+    <Word2Vector Run="false">
       <Input Path=""/>
       <Output Path=""/>
     </Word2Vector>

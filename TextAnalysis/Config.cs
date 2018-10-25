@@ -16,6 +16,9 @@ namespace TextAnalysis
         public string ClfInputPath { get; private set; } = @"D:\private\TextClassification_Old\RawTest.txt";
         public string ClfOutputPath { get; private set; } = @"D:\private\TextClassification_Old\RawTest_result.txt";
         public string SimilarityOutputPath { get; private set; } = @"D:\public\tmp\simRes.txt";
+
+        public bool RunSimilarity { get; private set; } = false;
+        public bool RunClf { get; private set; } = false;
         
         public string DemoFolder { get => Path.Combine(WorkFolder, "Demo"); }
         public string DemoSimStandardPath { get => Path.Combine(DemoFolder, "Data", "Python", "Similar.txt"); }
@@ -67,6 +70,8 @@ namespace TextAnalysis
         {
             XmlDocument xDoc = new XmlDocument();
             xDoc.Load(configPath);
+            RunClf = bool.Parse(xDoc["TextAnalysis"]["Demo"]["TextClassification"].Attributes["Run"].Value);
+            RunSimilarity=bool.Parse(xDoc["TextAnalysis"]["Demo"]["Word2Vector"].Attributes["Run"].Value);
             ClfInputPath = xDoc["TextAnalysis"]["Demo"]["TextClassification"]["Input"].Attributes["Path"].Value;
             ClfOutputPath=xDoc["TextAnalysis"]["Demo"]["TextClassification"]["Output"].Attributes["Path"].Value;
             SimilarityInputPath= xDoc["TextAnalysis"]["Demo"]["Word2Vector"]["Input"].Attributes["Path"].Value;

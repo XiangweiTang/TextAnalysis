@@ -10,4 +10,5 @@
       <Output Path=""/>
     </Word2Vector>
   </Demo>
+  <Python Path=""/>
 </TextAnalysis>

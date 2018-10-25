@@ -76,6 +76,7 @@ namespace TextAnalysis
             ClfOutputPath=xDoc["TextAnalysis"]["Demo"]["TextClassification"]["Output"].Attributes["Path"].Value;
             SimilarityInputPath= xDoc["TextAnalysis"]["Demo"]["Word2Vector"]["Input"].Attributes["Path"].Value;
             SimilarityOutputPath= xDoc["TextAnalysis"]["Demo"]["Word2Vector"]["Output"].Attributes["Path"].Value;
+            PythonPath = xDoc["TextAnalysis"]["Python"].Attributes["Path"].Value;
         }
     }
 }

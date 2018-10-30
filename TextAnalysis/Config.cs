@@ -10,73 +10,29 @@ namespace TextAnalysis
 {
     class Config
     {
-        #region Args
-
-        public string SimilarityInputPath { get; private set; } = @"D:\private\TextClassification_Old\Similar_input.txt";        
-        public string ClfInputPath { get; private set; } = @"D:\private\TextClassification_Old\RawTest.txt";
-        public string ClfOutputPath { get; private set; } = @"D:\private\TextClassification_Old\RawTest_result.txt";
-        public string SimilarityOutputPath { get; private set; } = @"D:\public\tmp\simRes.txt";
-
-        public bool RunSimilarity { get; private set; } = false;
-        public bool RunClf { get; private set; } = false;
-        
-        public string DemoFolder { get => Path.Combine(WorkFolder, "Demo"); }
-        public string DemoSimStandardPath { get => Path.Combine(DemoFolder, "Data", "Python", "Similar.txt"); }
-        public string DemoClfDictPath { get => Path.Combine(DemoFolder, "Data", "Python", "dict.txt"); }
-        public string DemoPythonFolder { get => Path.Combine(DemoFolder, "Data", "Python"); }
-        public string DemoClfModelPath { get => Path.Combine(DemoFolder, "Data", "Python", "PosNeg_Model.h5"); }
-        public string TmpPath { get => Path.Combine(WorkFolder, "Tmp"); }
-
-        public string InputFolder { get; private set; } = string.Empty;
-        public string WorkFolder { get => @".\"; }
-        public string PythonFolder { get { return Path.Combine(WorkFolder, "Data", "Python"); } }
-        public string RawFolder { get { return Path.Combine(WorkFolder, "Data", "Raw"); } }
-        public string PreProcessFolder { get { return Path.Combine(WorkFolder, "Data", "Pre"); } }
-        public string WordBreakFolder { get { return Path.Combine(WorkFolder, "Data", "Wbr"); } }
-        public string PostProcessFolder { get { return Path.Combine(WorkFolder, "Data", "Post"); } }
-        public string TrainTextFolder { get { return Path.Combine(WorkFolder, "Data", "TrainText"); } }
-        public string DevTextFolder { get { return Path.Combine(WorkFolder, "Data", "DevText"); } }
-        public string TestTextFolder { get { return Path.Combine(WorkFolder, "Data", "TestText"); } }
-        public string TrainFolder { get { return Path.Combine(WorkFolder, "Data", "Train"); } }
-        public string DevFolder { get { return Path.Combine(WorkFolder, "Data", "Dev"); } }
-        public string TestFolder { get { return Path.Combine(WorkFolder, "Data", "Test"); } }
-        public string LogFolder { get { return Path.Combine(WorkFolder, "Log"); } }
-        public string DictPath { get { return Path.Combine(WorkFolder, "Dict.txt"); } }
-        public IEnumerable<Tuple<char,char>> KeptIntervals { get; private set; }
-        public string DataLabel { get; private set; } = string.Empty;
-
-        public int MaxVocab { get; private set; } = 10000;
-        //public int PreserveOtherThanUnkPad { get; private set; } = 0;
-        public double TestRatio { get; private set; } = 1;
-        public double DevRatio { get; private set; } = 0;
-        public int TestCount { get; private set; } = 1000;
-        public int DevCount { get; private set; } = 1000;
-        public bool UseCount { get; private set; } = false;
-        public bool KeepSpace { get; private set; } = true;        
-        //public bool UseExistingDict { get; private set; } = true;
-        public bool ForceUpdate { get; private set; } = false;
-
-        public string WordBreakType { get; private set; } = "NA";
-
-        public string PythonPath { get; private set; } = @"C:\ProgramData\Anaconda3\python.exe";
-
+        #region Input args
+        public string WorkFolder { get; private set; } = string.Empty;
+        public string NegativeFolder { get; private set; } = string.Empty;
+        public string PositiveFolder { get; private set; } = string.Empty;
+        public string NonLabelFolder { get; private set; } = string.Empty;
+        public string BatchName { get; private set; } = string.Empty;
+        public string[] ValidIntervals { get; private set; } = new string[0];
+        public string Locale { get; private set; } = string.Empty;
+        public string PythonPath { get; private set; } = string.Empty;
+        public double DevRate { get; private set; } = 0.1;
+        public double TestRate { get; private set; } = 0.1;
         #endregion
 
-        public Config()
-        {
-        }
-
-        public void LoadConfig(string configPath)
-        {
-            XmlDocument xDoc = new XmlDocument();
-            xDoc.Load(configPath);
-            RunClf = bool.Parse(xDoc["TextAnalysis"]["Demo"]["TextClassification"].Attributes["Run"].Value);
-            RunSimilarity=bool.Parse(xDoc["TextAnalysis"]["Demo"]["Word2Vector"].Attributes["Run"].Value);
-            ClfInputPath = xDoc["TextAnalysis"]["Demo"]["TextClassification"]["Input"].Attributes["Path"].Value;
-            ClfOutputPath=xDoc["TextAnalysis"]["Demo"]["TextClassification"]["Output"].Attributes["Path"].Value;
-            SimilarityInputPath= xDoc["TextAnalysis"]["Demo"]["Word2Vector"]["Input"].Attributes["Path"].Value;
-            SimilarityOutputPath= xDoc["TextAnalysis"]["Demo"]["Word2Vector"]["Output"].Attributes["Path"].Value;
-            PythonPath = xDoc["TextAnalysis"]["Python"].Attributes["Path"].Value;
-        }
+        #region Internal generated args
+        public string PythonScriptFolder { get => Path.Combine(WorkFolder, "Python"); }
+        public string JiebaScriptPath { get => Path.Combine(PythonScriptFolder, "Jieba.py"); }
+        public string DataFolder { get => Path.Combine(WorkFolder, "Data"); }        
+        public string FileMappingPath { get => Path.Combine(DataFolder, "Mapping.txt"); }
+        public string TextFolder { get => Path.Combine(DataFolder, "Text"); }
+        public string LabelFolder { get => Path.Combine(DataFolder, "Label"); }
+        public string DigitFolder { get => Path.Combine(DataFolder, "Digit"); }
+        public string UsedDataFile { get => Path.Combine(DataFolder, "UsedData.txt"); }
+        public string TmpFolder { get => Path.Combine(WorkFolder, "Tmp"); }        
+        #endregion
     }
 }

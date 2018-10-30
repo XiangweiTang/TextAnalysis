@@ -14,7 +14,6 @@ namespace TextAnalysis
         public string WorkFolder { get; private set; } = string.Empty;
         public string NegativeFolder { get; private set; } = string.Empty;
         public string PositiveFolder { get; private set; } = string.Empty;
-        public string NonLabelFolder { get; private set; } = string.Empty;
         public string BatchName { get; private set; } = string.Empty;
         public string[] ValidIntervals { get; private set; } = new string[0];
         public string Locale { get; private set; } = string.Empty;
@@ -29,6 +28,7 @@ namespace TextAnalysis
         public string DataFolder { get => Path.Combine(WorkFolder, "Data"); }        
         public string FileMappingPath { get => Path.Combine(DataFolder, "Mapping.txt"); }
         public string TextFolder { get => Path.Combine(DataFolder, "Text"); }
+        public string NonLabelTextFolder { get => Path.Combine(DataFolder, "NonLabel"); }
         public string LabelFolder { get => Path.Combine(DataFolder, "Label"); }
         public string DigitFolder { get => Path.Combine(DataFolder, "Digit"); }
         public string UsedDataFile { get => Path.Combine(DataFolder, "UsedData.txt"); }

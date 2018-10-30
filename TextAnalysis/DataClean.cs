@@ -40,19 +40,23 @@ namespace TextAnalysis
         {
             File.AppendAllText(Cfg.FileMappingPath, Cfg.BatchName + "\t" + TmpName);
             if (Directory.Exists(Cfg.PositiveFolder))
-                PreCleanupLabeledFiles(Cfg.PositiveFolder, "1");
+                PreCleanupLabeledFiles(Cfg.PositiveFolder, "Pos");
             if (Directory.Exists(Cfg.NegativeFolder))
-                PreCleanupLabeledFiles(Cfg.NegativeFolder, "0");
+                PreCleanupLabeledFiles(Cfg.NegativeFolder, "Neg");
 
-            string posPath = Path.Combine(Cfg.TmpFolder, $"{TmpName}_1_wbr.txt");
-            string negPath = Path.Combine(Cfg.TmpFolder, $"{TmpName}_0_wbr.txt");
+            string posPath = Path.Combine(Cfg.TmpFolder, $"{TmpName}_Pos_wbr.txt");
+            string negPath = Path.Combine(Cfg.TmpFolder, $"{TmpName}_Neg_wbr.txt");
             MergeAndSplit(posPath, negPath);
+
+
         }
 
-        private void ReProduceDict()
+
+
+        private void CreateDict()
         {
             string dictPath = Path.Combine(Cfg.DataFolder, Cfg.Locale + ".dict");
-            var list = Directory.EnumerateFiles(Cfg.NonLabelFolder)
+            var list = Directory.EnumerateFiles(Cfg.NonLabelTextFolder)
                 .SelectMany(x => File.ReadLines(x))
                 .SelectMany(x => x.Split(Sep, StringSplitOptions.RemoveEmptyEntries));
             var groups = list.GroupBy(x => x)
@@ -70,7 +74,7 @@ namespace TextAnalysis
                 .Shuffle();
             var nonLabellist = labelList.Select(x => x.Split('\t')[1]);
 
-            string nonLabelPath = Path.Combine(Cfg.NonLabelFolder, $"{Cfg.BatchName}.{Cfg.Locale}.txt");
+            string nonLabelPath = Path.Combine(Cfg.NonLabelTextFolder, $"{Cfg.BatchName}.{Cfg.Locale}.txt");
             File.WriteAllLines(nonLabelPath, nonLabellist);
 
             int total = labelList.Length;

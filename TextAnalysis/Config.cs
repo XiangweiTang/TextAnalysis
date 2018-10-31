@@ -12,6 +12,7 @@ namespace TextAnalysis
     {
         #region Input args
         public string WorkFolder { get; private set; } = string.Empty;
+        public string NonlabeledFolder { get; private set; } = string.Empty;
         public string NegativeFolder { get; private set; } = string.Empty;
         public string PositiveFolder { get; private set; } = string.Empty;
         public string BatchName { get; private set; } = string.Empty;
@@ -20,6 +21,10 @@ namespace TextAnalysis
         public string PythonPath { get; private set; } = string.Empty;
         public double DevRate { get; private set; } = 0.1;
         public double TestRate { get; private set; } = 0.1;
+        public bool AddLabeledData { get; private set; } = false;
+        public bool AddNonLabeledData { get; private set; } = false;
+        public bool RebuildDict { get; private set; } = false;
+        public string DataDescription { get; private set; } = string.Empty;
         #endregion
 
         #region Internal generated args
@@ -31,8 +36,9 @@ namespace TextAnalysis
         public string NonLabelTextFolder { get => Path.Combine(DataFolder, "NonLabel"); }
         public string LabelFolder { get => Path.Combine(DataFolder, "Label"); }
         public string DigitFolder { get => Path.Combine(DataFolder, "Digit"); }
-        public string UsedDataFile { get => Path.Combine(DataFolder, "UsedData.txt"); }
+        public string UsedDataFile { get => Path.Combine(WorkFolder, "UsedData.txt"); }
         public string TmpFolder { get => Path.Combine(WorkFolder, "Tmp"); }        
+        public string DictPath { get => Path.Combine(DataFolder, $"{Locale}.dict"); }
         #endregion
     }
 }

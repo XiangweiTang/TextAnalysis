@@ -11,20 +11,23 @@ import sys
 import argparse
 import random
 from tempfile import gettempdir
-import zipfile
+#import zipfile
 
 import numpy as np
 from six.moves import urllib
 from six.moves import xrange
 import tensorflow as tf
+import sys
 
-from tensorflow.contrib.tensorboard.plugins import projector
+# from tensorflow.contrib.tensorboard.plugins import projector
 
-dict_path="dict.txt"
-input_file_name="total.wbr"
-imageName="total.png"
-similar_path="similar.txt"
-test_path="StandardTest.txt"
+dict_path=sys.argv[1]
+#Train file
+input_file_name=sys.argv[2]
+#The file contains information of key words and groups.
+test_path=sys.argv[3]
+#The output file path with similarities.
+similar_path=sys.argv[4]
 
 def read_to_word(filename):
 	with open(filename,'r',encoding='UTF-8') as f:
@@ -116,7 +119,7 @@ valid_window=100
 def read_test(test_path):
 	with open(test_path,'r', encoding= 'UTF-8') as f:
 		for line in f:
-			yield dictionary[line[:-1]]
+			yield dictionary[line.split()[1][:-1]]
 
 ex_list=list(read_test(test_path))
 valid_size=len(ex_list)

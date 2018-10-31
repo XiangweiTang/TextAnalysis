@@ -89,8 +89,8 @@ namespace TextAnalysis
 
         public static void RunWordBreak(string inputFilePath, string outputFilePath, string pythonPath, string scriptPath)
         {
-            string args = string.Join(" ", scriptPath, inputFilePath, outputFilePath);
-            Common.RunFile(pythonPath, args);
+            string args = string.Join(" ", GetFullPath(scriptPath), GetFullPath(inputFilePath), GetFullPath(outputFilePath));
+            RunFile(pythonPath, args);
         }
 
         public static void RunPredict(string testDataPath, string predictResultPath, string pythonPath, string scriptPath, string workDir)

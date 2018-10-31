@@ -16,22 +16,32 @@ namespace TextAnalysis
         string TmpName = string.Empty;
         private readonly char[] Sep = { ' ' };
         Dictionary<string, string> Dict = new Dictionary<string, string>();
-        public string NonLabeledPath { get => Path.Combine(Cfg.NonLabelTextFolder, $"{Cfg.BatchName}.txt"); }        
+        
+        public string NonLabeledPath { get => Path.Combine(Cfg.NonSupTextFolder, $"{Cfg.BatchName}.txt"); }        
+        public string NonLabeledDigitPath { get => Path.Combine(Cfg.NonSupDigitFolder, $"{Cfg.BatchName}.txt"); }
         public string DevTextPath { get => Path.Combine(Cfg.TextFolder, $"{Cfg.BatchName}_{Constants.DEV}.txt"); }
-        public string DevLabelPath { get => Path.Combine(Cfg.LabelFolder, $"{Cfg.BatchName}_{Constants.DEV}.txt"); }
+        public string DevLabelPath { get => Path.Combine(Cfg.SupLabelFolder, $"{Cfg.BatchName}_{Constants.DEV}.txt"); }
         string DevTmpPath { get => Path.Combine(Cfg.TmpFolder, $"{TmpName}_{Constants.DEV}.txt"); }
         public string TestTextPath { get => Path.Combine(Cfg.TextFolder, $"{Cfg.BatchName}_{Constants.TEST}.txt"); }
-        public string TestLabelPath { get => Path.Combine(Cfg.LabelFolder, $"{Cfg.BatchName}_{Constants.TEST}.txt"); }
+        public string TestLabelPath { get => Path.Combine(Cfg.SupLabelFolder, $"{Cfg.BatchName}_{Constants.TEST}.txt"); }
         string TestTmpPath { get => Path.Combine(Cfg.TmpFolder, $"{TmpName}_{Constants.TEST}.txt"); }
         public string TrainTextPath { get => Path.Combine(Cfg.TextFolder, $"{Cfg.BatchName}_{Constants.TRAIN}.txt"); }
-        public string TrainLabelPath { get => Path.Combine(Cfg.LabelFolder, $"{Cfg.BatchName}_{Constants.TRAIN}.txt"); }
+        public string TrainLabelPath { get => Path.Combine(Cfg.SupLabelFolder, $"{Cfg.BatchName}_{Constants.TRAIN}.txt"); }
         string TrainTmpPath { get => Path.Combine(Cfg.TmpFolder, $"{TmpName}_{Constants.TRAIN}.txt"); }
+
         public DataClean(Config cfg)
         {
             Cfg = cfg;
-            TmpName = new Guid().ToString();
+            TmpName = Guid.NewGuid().ToString();
         }
-        public void Run()
+
+        public void RunAddTestData()
+        {
+            ProcessNonLabeledData();
+            ToDigit(NonLabeledPath, NonLabeledDigitPath);
+        }        
+
+        public void RunAddTrainData()
         {
             if (Cfg.AddLabeledData)
                 ProcessLabeledData();
@@ -40,12 +50,13 @@ namespace TextAnalysis
             if (Cfg.RebuildDict)
                 RebuildDict();
             ToDigit();
-            File.AppendAllText(Cfg.UsedDataFile, string.Join("\t", Cfg.BatchName, Cfg.DataDescription));
-        }       
+            File.AppendAllText(Cfg.UsedDataFile, string.Join("\t", Cfg.Locale, Cfg.BatchName, Cfg.DataDescription));
+        }     
+
         private void ToDigit()
         {
             Dict = File.ReadLines(Cfg.DictPath).ToDictionary(x => x.Split('\t')[0], x => x.Split('\t')[1]);
-            Common.FolderTransport(Cfg.TextFolder, Cfg.DigitFolder, ToDigit);
+            Common.FolderTransport(Cfg.TextFolder, Cfg.SupDigitFolder, ToDigit);
         }
         private void ToDigit(string inputPath, string outputPath)
         {
@@ -63,7 +74,10 @@ namespace TextAnalysis
 
             string cleanPath = Path.Combine(Cfg.TmpFolder, $"{TmpName}_clean.txt");
             string wbrPath = Path.Combine(Cfg.TmpFolder, $"{TmpName}_wbr.txt");
-            Common.RunWordBreak(cleanPath, wbrPath, Cfg.PythonPath, Cfg.JiebaScriptPath);
+            if (Cfg.Locale == "CHS")
+                Common.RunWordBreak(cleanPath, wbrPath, Cfg.PythonPath, Cfg.JiebaScriptPath);
+            else
+                File.Copy(cleanPath, wbrPath);
 
             TransportNonLabeledData();
         }
@@ -78,6 +92,7 @@ namespace TextAnalysis
         private void TransportNonLabeledData()
         {
             var list = File.ReadLines(Path.Combine(Cfg.TmpFolder, $"{TmpName}_wbr.txt"))
+                .Where(x => !string.IsNullOrWhiteSpace(x))
                 .Select(x => SpaceReg.Replace(x, " ").Trim());
             File.WriteAllLines(NonLabeledPath, list);            
         }
@@ -91,7 +106,7 @@ namespace TextAnalysis
 
             string posPath = Path.Combine(Cfg.TmpFolder, $"{TmpName}_Pos_wbr.txt");
             string negPath = Path.Combine(Cfg.TmpFolder, $"{TmpName}_Neg_wbr.txt");
-            MergeAndSplit(posPath, negPath);
+            MergeAndSplit(posPath, negPath, Cfg.DevRate, Cfg.TestRate);
 
             TransportLabeledData();
         }
@@ -107,36 +122,36 @@ namespace TextAnalysis
         private void SplitLabel(string srcPath, string dstDataPath, string dstLabelPath)
         {
             var list = File.ReadAllLines(srcPath);
-            var dataList = list.Select(x => x.Split('\t')[0]);
-            var labelList = list.Select(x => SpaceReg.Replace(x.Split('\t')[1], " ").Trim());
+            var labelList = list.Select(x => x.Split('\t')[0]);
+            var dataList = list.Select(x => SpaceReg.Replace(x.Split('\t')[1], " ").Trim());
             File.WriteAllLines(dstDataPath, dataList);
             File.WriteAllLines(dstLabelPath, labelList);
         }
         private void RebuildDict()
         {
-            var list = Directory.EnumerateFiles(Cfg.NonLabelTextFolder)
+            var list = Directory.EnumerateFiles(Cfg.NonSupTextFolder)
                 .SelectMany(x => File.ReadLines(x))
                 .SelectMany(x => x.Split(Sep, StringSplitOptions.RemoveEmptyEntries));
             var groups = list.GroupBy(x => x)
                 .OrderByDescending(x => x.Count())
                 .Select(x => x.Key);
             int n = 0;
-            var dict = Constants.Kept.Concat(groups).ToDictionary(x => x, x => n++);
+            var dict = Constants.Kept.Concat(groups).Take(Cfg.MaxVocab).ToDictionary(x => x, x => n++);
             File.WriteAllLines(Cfg.DictPath, dict.Select(x => x.Key + "\t" + x.Value));
         }
-        private void MergeAndSplit(string posPath, string negPath)
+        private void MergeAndSplit(string posPath, string negPath, double devRate, double testRate)
         {
-            var labelList = File.ReadLines(posPath).Select(x => "1\t" + x)
-                .Concat(File.ReadLines(negPath).Select(x => "0\t" + x))
+            var labelList = File.ReadLines(posPath).Where(x=>!string.IsNullOrWhiteSpace(x)).Select(x => "1\t" + x)
+                .Concat(File.ReadLines(negPath).Where(x => !string.IsNullOrWhiteSpace(x)).Select(x => "0\t" + x))
                 .Shuffle();
             var nonLabellist = labelList.Select(x => x.Split('\t')[1]);
 
-            string nonLabelPath = Path.Combine(Cfg.NonLabelTextFolder, $"{Cfg.BatchName}.{Cfg.Locale}.txt");
+            string nonLabelPath = Path.Combine(Cfg.NonSupTextFolder, $"{Cfg.BatchName}.{Cfg.Locale}.txt");
             File.WriteAllLines(nonLabelPath, nonLabellist);
 
             int total = labelList.Length;
-            int devCount = Convert.ToInt32(Cfg.DevRate * total);
-            int testCount = Convert.ToInt32(Cfg.TestRate * total);
+            int devCount = Convert.ToInt32(devRate * total);
+            int testCount = Convert.ToInt32(testRate * total);
 
             if (devCount > 0)
             {
@@ -177,7 +192,7 @@ namespace TextAnalysis
         private void PreCleanup(string folderPath,string preCleanPath)
         {
             var preCleanList = Directory.EnumerateFiles(folderPath).SelectMany(x => File.ReadLines(x))
-                .Select(x => PreCleanup(x));
+                .Select(x => PreCleanup(x));                
             File.WriteAllLines(preCleanPath, preCleanList);
         }
         private string PreCleanup(string line)

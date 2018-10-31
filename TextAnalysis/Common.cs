@@ -89,7 +89,13 @@ namespace TextAnalysis
 
         public static void RunWordBreak(string inputFilePath, string outputFilePath, string pythonPath, string scriptPath)
         {
-            string args = string.Join(" ", GetFullPath(scriptPath), GetFullPath(inputFilePath), GetFullPath(outputFilePath));
+            string args = string.Join(" ", scriptPath, inputFilePath, outputFilePath);
+            RunFile(pythonPath, args);
+        }
+
+        public static void RunBuildTextClassification(string trainDataPath, string trainLabelPath, string devDataPath, string devLabelPath, string modelPath, string pythonPath, string scriptPath)
+        {
+            string args = string.Join(" ", scriptPath, trainDataPath, trainLabelPath, devDataPath, devLabelPath, modelPath);
             RunFile(pythonPath, args);
         }
 
@@ -125,7 +131,7 @@ namespace TextAnalysis
 
         public static string GetFullPath(string relativePath)
         {
-            return (new FileInfo(relativePath)).FullName;
+            return new DirectoryInfo(relativePath).FullName;
         }
     }
 }

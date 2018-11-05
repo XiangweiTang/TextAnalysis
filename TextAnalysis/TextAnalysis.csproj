@@ -50,11 +50,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AddNonSupData.cs" />
+    <Compile Include="AddSupData.cs" />
     <Compile Include="Common.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="DataClean.cs" />
     <Compile Include="Logger.cs" />
+    <Compile Include="NewDataProcessing.cs" />
     <Compile Include="PrepareTestData.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

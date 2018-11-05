@@ -38,6 +38,7 @@ namespace TextAnalysis
         public string NonSupTextFolder { get => Path.Combine(DataFolder, "NonSupText"); }
         public string NonSupDigitFolder { get => Path.Combine(DataFolder, "NonSupDigit"); }
         public string SupLabelFolder { get => Path.Combine(DataFolder, "SupLabel"); }
+        public string SupTextFolder { get => Path.Combine(DataFolder, "SupText"); }
         public string SupDigitFolder { get => Path.Combine(DataFolder, "SupDigit"); }
         public string UsedDataFile { get => Path.Combine(WorkFolder, "UsedData.txt"); }
         public string TmpFolder { get => Path.Combine(WorkFolder, "Tmp"); }        

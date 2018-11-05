@@ -132,6 +132,6 @@ namespace TextAnalysis
         public static string GetFullPath(string relativePath)
         {
             return new DirectoryInfo(relativePath).FullName;
-        }
+        }        
     }
 }

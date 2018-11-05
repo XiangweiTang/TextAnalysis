@@ -56,7 +56,7 @@ namespace TextAnalysis
         private void ToDigit()
         {
             Dict = File.ReadLines(Cfg.DictPath).ToDictionary(x => x.Split('\t')[0], x => x.Split('\t')[1]);
-            Common.FolderTransport(Cfg.TextFolder, Cfg.SupDigitFolder, ToDigit);
+            Common.FolderTransport(Cfg.TextFolder, Cfg.SupDataFolder, ToDigit);
         }
         private void ToDigit(string inputPath, string outputPath)
         {
@@ -136,7 +136,7 @@ namespace TextAnalysis
                 .OrderByDescending(x => x.Count())
                 .Select(x => x.Key);
             int n = 0;
-            var dict = Constants.Kept.Concat(groups).Take(Cfg.MaxVocab).ToDictionary(x => x, x => n++);
+            var dict = Constants.HEAD.Concat(groups).Take(Cfg.MaxVocab).ToDictionary(x => x, x => n++);
             File.WriteAllLines(Cfg.DictPath, dict.Select(x => x.Key + "\t" + x.Value));
         }
         private void MergeAndSplit(string posPath, string negPath, double devRate, double testRate)

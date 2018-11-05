@@ -34,13 +34,13 @@ namespace TextAnalysis
             var usedList = GetUsedData(Cfg.SupLabelFolder).ToArray();
 
             TrainDataPath = Path.Combine(Cfg.TmpFolder, TmpName + "_train_sup_data.txt");
-            RebuildFiles(usedList, TrainDataPath, Cfg.SupDigitFolder, "{0}_train.txt");
+            RebuildFiles(usedList, TrainDataPath, Cfg.SupDataFolder, "{0}_train.txt");
 
             TrainLabelPath = Path.Combine(Cfg.TmpFolder, TmpName + "_train_sup_label.txt");
             RebuildFiles(usedList, TrainLabelPath, Cfg.SupLabelFolder, "{0}_train.txt");
 
             DevDataPath = Path.Combine(Cfg.TmpFolder, TmpName + "_dev_sup_data.txt");
-            RebuildFiles(usedList, DevDataPath, Cfg.SupDigitFolder, "{0}_dev.txt");
+            RebuildFiles(usedList, DevDataPath, Cfg.SupDataFolder, "{0}_dev.txt");
 
             DevLabelpath = Path.Combine(Cfg.TmpFolder, TmpName + "_dev_sup_label.txt");
             RebuildFiles(usedList, DevLabelpath, Cfg.SupLabelFolder, "{0}_dev.txt");

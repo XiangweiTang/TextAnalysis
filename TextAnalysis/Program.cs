@@ -22,7 +22,7 @@ namespace TextAnalysis
             Directory.CreateDirectory(cfg.DataFolder);
             Directory.CreateDirectory(cfg.PythonScriptFolder);
             Directory.CreateDirectory(cfg.TmpFolder);
-            Directory.CreateDirectory(cfg.SupDigitFolder);
+            Directory.CreateDirectory(cfg.SupDataFolder);
             Directory.CreateDirectory(cfg.SupLabelFolder);
             Directory.CreateDirectory(cfg.TextFolder);
             //Directory.CreateDirectory(cfg.NonlabeledFolder);

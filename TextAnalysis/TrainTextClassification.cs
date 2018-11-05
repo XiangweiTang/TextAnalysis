@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
 
 namespace TextAnalysis
 {
@@ -16,9 +17,33 @@ namespace TextAnalysis
 
         public void Run()
         {
-            PrepareTrainData ptd = new PrepareTrainData(Cfg);
-            ptd.BuildTCData();
-            Common.RunBuildTextClassification(ptd.TrainDataPath, ptd.TrainLabelPath, ptd.DevDataPath, ptd.DevLabelpath, Cfg.TextClassificationModelPath, Cfg.PythonPath, Cfg.BuildModelScriptPath);
+            PrepareData(Constants.DEV);
+            PrepareData(Constants.TRAIN);
+            Train();
+        }
+
+        private void PrepareData(string type)
+        {
+            var textList = Directory.EnumerateFiles(Cfg.SupDataFolder, $"*.{type}.{Cfg.Locale}.txt")
+                .SelectMany(x => File.ReadLines(x));
+            var labelList = Directory.EnumerateFiles(Cfg.SupLabelFolder, $"*.{type}.{Cfg.Locale}.txt")
+                .SelectMany(x => File.ReadLines(x));
+            if (type == Constants.TRAIN)
+            {
+                File.WriteAllLines(Cfg.TextClassificationTrainDataPath, textList);
+                File.WriteAllLines(Cfg.TextClassificationTrainLabelPath, labelList);
+            }
+            if (type == Constants.DEV)
+            {
+                File.WriteAllLines(Cfg.TextClassificationDevDataPath, textList);
+                File.WriteAllLines(Cfg.TextClassificationDevLabelPath, labelList);
+            }            
+        }
+
+        private void Train()
+        {
+            string args = string.Join(" ", Cfg.BuildModelScriptPath, Cfg.TextClassificationTrainDataPath, Cfg.TextClassificationTrainLabelPath, Cfg.TextClassificationDevDataPath, Cfg.TextClassificationDevLabelPath, Cfg.TextClassificationModelPath);
+            Common.RunFile(Cfg.PythonPath, args);
         }
     }
 }

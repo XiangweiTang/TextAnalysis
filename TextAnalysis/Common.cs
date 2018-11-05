@@ -132,16 +132,6 @@ namespace TextAnalysis
         public static string GetFullPath(string relativePath)
         {
             return new DirectoryInfo(relativePath).FullName;
-        }
-
-        public static void RebuildDictionary(IEnumerable<string> fileList, string outputPath, int maxVocab)
-        {
-            List<string> head = new List<string> { Constants.UNK, Constants.PAD };
-            var tail = fileList.SelectMany(x => x.Split(' ')).GroupBy(x => x)
-                .OrderByDescending(x => x.Count())
-                .Select(x => x.Key);
-            var list = head.Concat(tail).Take(maxVocab).Select((x, y) => x + "\t" + y);
-            File.WriteAllLines(outputPath, list);
-        }
+        }        
     }
 }

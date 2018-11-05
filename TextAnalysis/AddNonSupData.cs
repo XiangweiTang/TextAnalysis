@@ -20,16 +20,16 @@ namespace TextAnalysis
         public void Run()
         {
             Cleanup();
-            var fileList = Directory.EnumerateFiles(Cfg.NonSupTextFolder, $"*.{Cfg.Locale}.txt");
-            Common.RebuildDictionary(fileList, Cfg.DictPath, Cfg.MaxVocab);
+            string dataStatus = string.Join("\t", Constants.NONSUP, Cfg.BatchName, Cfg.DataDescription);
+            File.AppendAllText(Cfg.UsedDataFile, dataStatus);
         }
 
         private void Cleanup()
         {
             var list = Directory.EnumerateFiles(Cfg.NonlabeledFolder).SelectMany(x => File.ReadLines(x));
-            string rawPath = Path.Combine(Cfg.TmpFolder, $"{TmpName}_raw.txt");
-            string preProcessPath = Path.Combine(Cfg.TmpFolder, $"{TmpName}_pre.txt");
-            string wbrPath = Path.Combine(Cfg.TmpFolder, $"{TmpName}_wbr.txt");
+            string rawPath = Path.Combine(Cfg.TmpFolder, $"{TmpName}.{Cfg.Locale}.raw");
+            string preProcessPath = Path.Combine(Cfg.TmpFolder, $"{TmpName}.{Cfg.Locale}.pre");
+            string wbrPath = Path.Combine(Cfg.TmpFolder, $"{TmpName}.{Cfg.Locale}.wbr");
             string postProcessPath = Path.Combine(Cfg.NonSupTextFolder, $"{Cfg.BatchName}.{Cfg.Locale}.txt");
             NewDataProcessing ndp = new NewDataProcessing(Cfg);
             File.WriteAllLines(rawPath, list);

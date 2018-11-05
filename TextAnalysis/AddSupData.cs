@@ -20,75 +20,51 @@ namespace TextAnalysis
 
         public void Run()
         {
-            Cleanup(Cfg.PositiveFolder, "Pos");
-            Cleanup(Cfg.NegativeFolder, "Neg");
-            MergePosNeg("dev");
-            MergePosNeg("test");
-            MergePosNeg("train");
-
-            var fileList = Directory.EnumerateFiles(Cfg.NonSupTextFolder, $"*.{Cfg.Locale}.txt");
-            Common.RebuildDictionary(fileList, Cfg.DictPath, Cfg.MaxVocab);
-            WordToDigitDict = File.ReadLines(Cfg.DictPath).ToDictionary(x => x.Split('\t')[0], x => x.Split('\t')[1]);
-            Common.FolderTransport(Cfg.SupTextFolder, Cfg.SupDigitFolder,TextToDigit);
+            string posPath = Cleanup(Cfg.PositiveFolder, "Pos");
+            string negPath = Cleanup(Cfg.NegativeFolder, "Neg");
+            MergeData(posPath, negPath);
+            string dataStatus = string.Join("\t", Constants.SUP, Cfg.BatchName, Cfg.DataDescription);
+            File.AppendAllText(Cfg.UsedDataFile, dataStatus);
         }
 
-        private void Cleanup(string inputFolder, string type)
+        private string Cleanup(string inputFolder, string type)
         {
             var rawList = Directory.EnumerateFiles(inputFolder).SelectMany(x => File.ReadLines(x));
-            string rawPath = Path.Combine(Cfg.TmpFolder, $"{TmpName}_{type}_raw.txt");
-            string preProcessPath = Path.Combine(Cfg.TmpFolder, $"{TmpName}_{type}_pre.txt");
-            string wbrPath = Path.Combine(Cfg.TmpFolder, $"{TmpName}_{type}_wbr.txt");
-            string postProcessPath = Path.Combine(Cfg.TmpFolder, $"{TmpName}_{type}_post.txt");
+            string rawPath = Path.Combine(Cfg.TmpFolder, $"{TmpName}.{type}.{Cfg.Locale}.raw");
+            string preProcessPath = Path.Combine(Cfg.TmpFolder, $"{TmpName}.{type}.{Cfg.Locale}.pre");
+            string wbrPath = Path.Combine(Cfg.TmpFolder, $"{TmpName}.{type}.{Cfg.Locale}.wbr");
+            string postProcessPath = Path.Combine(Cfg.TmpFolder, $"{TmpName}.{type}.{Cfg.Locale}.post");
             NewDataProcessing ndp = new NewDataProcessing(Cfg);
             File.WriteAllLines(rawPath, rawList);
             ndp.PreProcessFile(rawPath, preProcessPath);
             ndp.WordBreakFile(preProcessPath, wbrPath);
             ndp.PostProcessFile(wbrPath, postProcessPath);
-
-            var cleanList = File.ReadLines(postProcessPath).Shuffle();
-            int total = cleanList.Length;
-            int testCount = Convert.ToInt32(Cfg.TestRate * total);
-            int devCount = Convert.ToInt32(Cfg.DevRate * total);
-            int trainCount = total - testCount - devCount;
-            var dev = cleanList.ArrayTake(devCount);
-            var test = cleanList.ArrayRange(devCount, testCount);
-            var train = cleanList.ArraySkip(devCount + testCount);
-            string devPath = Path.Combine(Cfg.TmpFolder, $"{TmpName}_{type}_dev.txt");
-            string testPath = Path.Combine(Cfg.TmpFolder, $"{TmpName}_{type}_test.txt");
-            string trainPath = Path.Combine(Cfg.TmpFolder, $"{TmpName}_{type}_train.txt");
-            File.WriteAllLines(devPath, dev);
-            File.WriteAllLines(testPath, test);
-            File.WriteAllLines(trainPath, train);
+            return postProcessPath;
         }
 
-        private void MergePosNeg(string dataType)
+        private void MergeData(string posPath, string negPath)
         {
-            string posPath = Path.Combine(Cfg.TmpFolder, $"{TmpName}_Pos_{dataType}.txt");
-            string negPath = Path.Combine(Cfg.TmpFolder, $"{TmpName}_Neg_{dataType}.txt");
-            string outputNonSupTextPath = Path.Combine(Cfg.NonSupTextFolder, $"{Cfg.BatchName}_{dataType}.txt");
-            string outputSupTextPath = Path.Combine(Cfg.SupTextFolder, $"{Cfg.BatchName}_{dataType}.txt");
-            string outputLabelPath = Path.Combine(Cfg.SupLabelFolder, $"{Cfg.BatchName}_{dataType}.txt");
-            MergePosNeg(posPath, negPath, outputNonSupTextPath, outputLabelPath);
-            File.Copy(outputNonSupTextPath, outputSupTextPath);
+            var posList = File.ReadLines(posPath).Select(x => new { Label = "1", Text = x });
+            var negList = File.ReadLines(negPath).Select(x => new { Label = "0", Text = x });
+            var array = posList.Concat(negList).Shuffle();
+            int total = array.Length;
+            int testCount = Convert.ToInt32(total * Cfg.TestRate);
+            int devCount = Convert.ToInt32(total * Cfg.DevRate);
+            int trainCount = total - devCount - testCount;
+            var test = array.ArrayTake(testCount);
+            var dev = array.ArrayRange(testCount, devCount);
+            var train = array.ArraySkip(testCount + devCount);
+            Split(test.Select(x => x.Text), test.Select(x => x.Label), Constants.TEST);
+            Split(dev.Select(x => x.Text), test.Select(x => x.Label), Constants.DEV);
+            Split(train.Select(x => x.Text), train.Select(x => x.Label), Constants.TRAIN);
         }
 
-        private void MergePosNeg(string posPath, string negPath, string outputDataPath, string outputLabelPath)
+        private void Split(IEnumerable<string> textList, IEnumerable<string> labelList, string type)
         {
-            var posList = File.ReadLines(posPath).Select(x => new { Label = "1", Data = x });
-            var negList = File.ReadLines(negPath).Select(x => new { Label = "0", Data = x });
-            var list = posList.Concat(negList).Shuffle();
-            File.WriteAllLines(outputDataPath, list.Select(x => x.Data));
-            File.WriteAllLines(outputLabelPath, list.Select(x => x.Label));
-        }
-        private void TextToDigit(string wordPath, string digitPath)
-        {
-            var list = File.ReadLines(wordPath)
-                .Select(x => x
-                .Split(' ')
-                .ArraySkip(256 - x.Length)
-                .Select(y => WordToDigitDict.ContainsKey(y) ? WordToDigitDict[y] : WordToDigitDict[Constants.UNK]))
-                .Select(x => string.Join(" ", x));
-            File.WriteAllLines(digitPath, list);
+            string textPath = Path.Combine(Cfg.SupTextFolder, $"{Cfg.BatchName}.{type}.{Cfg.Locale}.txt");
+            string labelPath = Path.Combine(Cfg.SupLabelFolder, $"{Cfg.BatchName}.{type}.{Cfg.Locale}.txt");
+            File.WriteAllLines(textPath, textList);
+            File.WriteAllLines(labelPath, labelList);
         }
     }
 }

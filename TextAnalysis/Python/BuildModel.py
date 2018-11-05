@@ -5,13 +5,15 @@ import DataPrepare as dp
 import numpy as np
 import sys
 
-train_data_path="train_data.txt"
-train_label_path="train_label.txt"
+train_data_path=sys.argv[1]
+train_label_path=sys.argv[2]
 
-dev_data_path="dev_data.txt"
-dev_label_path="dev_label.txt"
+dev_data_path=sys.argv[3]
+dev_label_path=sys.argv[4]
 
-dict_path="dict.txt"
+model_path=sys.argv[5]
+
+#dict_path="dict.txt"
 
 pad_index=0
 max_length=256
@@ -22,8 +24,8 @@ train_label=dp.create_label(train_label_path)
 dev_data=dp.create_data(dev_data_path)
 dev_label=dp.create_label(dev_label_path)
 
-word_index_dict=dp.create_dict(dict_path)
-index_word_dict=dict([(value, key) for (key,value) in word_index_dict.items()])
+#word_index_dict=dp.create_dict(dict_path)
+#index_word_dict=dict([(value, key) for (key,value) in word_index_dict.items()])
 
 vocab_size=10000
 
@@ -45,5 +47,5 @@ model=build_model()
 model.fit(train_data,train_label, epochs=40, batch_size=512, validation_data=(dev_data,dev_label),verbose=1)
 
 
-model.save("PosNeg_model.h5")
+model.save(model_path)
 print("Model is built.")

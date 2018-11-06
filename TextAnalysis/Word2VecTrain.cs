@@ -26,7 +26,7 @@ namespace TextAnalysis
 
         private void Train()
         {
-            string args = string.Join(" ", Cfg.Word2VecScriptPath, Cfg.DictPath, Cfg.Word2VecTrainDatapath, Cfg.Word2VecKeyWordPath, Cfg.Word2VecSimilarityPath);
+            string args = string.Join(" ", Cfg.Word2VecScriptPath, Cfg.DictPath, Cfg.Word2VecTrainDatapath, Cfg.SimilarityKeyWordPath, Cfg.Word2VecSimilarityPath);
             Common.RunFile(Cfg.PythonPath, args);
         }
     }

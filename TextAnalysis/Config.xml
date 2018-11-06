@@ -1,14 +1,20 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<TextAnalysis>
-  <Demo>
-    <TextClassification Run="true">
-      <Input Path="Clf_Test.txt"/>
-      <Output Path="Clf_Result.txt"/>
-    </TextClassification>
-    <Word2Vector Run="true">
-      <Input Path="Sim_Test.txt"/>
-      <Output Path="Sim_Result.txt"/>
-    </Word2Vector>
-  </Demo>
+<TextAnalysis Locale="">
+  <NewData DataBatchName="" DataDescription="">
+    <NonLabeledData Add="false" Path=""/>
+    <LabeledData Add="false" PosPath="" NegPath=""/>
+  </NewData>
+  <Train TextClassification="false" Word2Vec="false"/>
+  <Test>
+    <Evaluate Run="false" PosPath="" NegPath=""/>
+    <Predict Run="false" TestFilePath=""/>
+    <Similarity Run="false" TestFilePath="" KeywordPath=""/>
+  </Test>
+  <ValidIntervals>
+    <Interval Locale="CHS" Value="一龟"/>
+    <Interval Locale="ENU" Value="az"/>
+    <Interval Locale="ENU" Value="AZ"/>
+  </ValidIntervals>
+  <Model TestRate="0.1" DevRate="0.1" MaxVocab="50000" RebuildDict="true"/>
   <Python Path="C:\Users\tangx\AppData\Local\Programs\Python\Python36\python.exe"/>
 </TextAnalysis>

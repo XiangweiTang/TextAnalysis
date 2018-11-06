@@ -11,7 +11,21 @@ namespace TextAnalysis
     {
         static void Main(string[] args)
         {
+            string configPath = args.Length == 0 ? "Config.xml" : args[0];
+            if (!File.Exists(configPath))
+            {
+                Console.WriteLine("Config is missing.");
+            }
+            else
+            {
+                LoadConfigAndRun(configPath);
+            }
+        }
+
+        static void LoadConfigAndRun(string configPath)
+        {
             Config cfg = new Config();
+            cfg.LoadConfig(configPath);
             RunTextAnalysis rta = new RunTextAnalysis(cfg);
             rta.Run();
         }

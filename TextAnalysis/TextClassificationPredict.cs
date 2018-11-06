@@ -26,7 +26,7 @@ namespace TextAnalysis
             string postPath = Path.Combine(Cfg.TmpFolder, $"{TmpName}.{Cfg.Locale}.post");
             string dataPath = Path.Combine(Cfg.TmpFolder, $"{TmpName}.{Cfg.Locale}.data");
             string resultPath = Path.Combine(Cfg.TmpFolder, $"{TmpName}.{Cfg.Locale}.result");
-            dataProcessing.PreProcessFile(Cfg.TextClassificationTestPath, prePath);
+            dataProcessing.PreProcessFile(Cfg.PredictTestPath, prePath);
             dataProcessing.WordBreakFile(prePath, wbrPath);
             dataProcessing.PostProcessFile(wbrPath, postPath);
             digitalize.Run(postPath, dataPath);

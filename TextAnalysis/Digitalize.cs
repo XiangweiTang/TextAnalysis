@@ -64,12 +64,5 @@ namespace TextAnalysis
                 .Select(x => string.Join(" ", x));
             File.WriteAllLines(dataPath, list);
         }
-
-        private bool DoNothing(string[] list)
-        {
-            if (list.Length >= 256)
-                ;
-            return true;
-        }
     }
 }

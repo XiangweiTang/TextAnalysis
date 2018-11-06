@@ -26,7 +26,7 @@ namespace TextAnalysis
         public bool RebuildDict { get; private set; } = true;
         public string DataDescription { get; private set; } = "This is only a test.";
         public int MaxVocab { get; private set; } = 10000;
-        public string TextClassificationTestPath { get; private set; } = string.Empty;
+        public string TextClassificationTestPath { get; private set; } = @"C:\Users\v-xianta\Source\Repos\TextAnalysis\TextAnalysis\bin\Debug\Data\SupText\Check_20181031.Test.CHS.txt";
         public string Word2VecTestPath { get; private set; } = string.Empty;
         #endregion
 

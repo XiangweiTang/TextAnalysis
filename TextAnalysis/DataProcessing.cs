@@ -18,12 +18,10 @@ namespace TextAnalysis
         Regex TagReg = new Regex("<[^>]*>", RegexOptions.Compiled);
         Regex LinkReg = new Regex("http[^\\s]*", RegexOptions.Compiled);
         Regex SpaceReg = new Regex("\\s+", RegexOptions.Compiled);
-        string[] intervals = new string[0];
-
         
         public void PostProcessFile(string inputFilePath, string outputFilePath)
         {
-            var list = File.ReadLines(inputFilePath).Where(x => !string.IsNullOrWhiteSpace(x)).Select(x => TagReg.Replace(x, " ").Trim());
+            var list = File.ReadLines(inputFilePath).Where(x => !string.IsNullOrWhiteSpace(x)).Select(x => SpaceReg.Replace(x, " ").Trim());
             File.WriteAllLines(outputFilePath, list);
         }
         public void WordBreakFile(string inputFilePath, string outputFilePath)
@@ -35,7 +33,7 @@ namespace TextAnalysis
         }
         public void PreProcessFile(string inputFilePath, string outputFilePath)
         {
-            var list = File.ReadLines(inputFilePath).Select(x => RegCleanUp(x)).Select(x => CharCleanUp(x, intervals));
+            var list = File.ReadLines(inputFilePath).Select(x => RegCleanUp(x)).Select(x => CharCleanUp(x));
             File.WriteAllLines(outputFilePath, list);
         }
         private string RegCleanUp(string s)
@@ -45,15 +43,15 @@ namespace TextAnalysis
             string removeSpace = SpaceReg.Replace(removeLink, " ").Trim();
             return removeSpace;
         }
-        private string CharCleanUp(string s,string[] intervals)
+        private string CharCleanUp(string s)
         {
-            return new string(RemoveChars(s, intervals).ToArray());
+            return new string(RemoveChars(s).ToArray());
         }
-        private IEnumerable<char> RemoveChars(string s, string[] intervals)
+        private IEnumerable<char> RemoveChars(string s)
         {
             foreach(char c in s)
             {
-                foreach(string interval in intervals)
+                foreach(string interval in Cfg.ValidIntervals)
                 {
                     if(interval[0]<=c&&c<=interval[1])
                     {

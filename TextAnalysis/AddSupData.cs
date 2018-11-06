@@ -23,6 +23,10 @@ namespace TextAnalysis
             string posPath = Cleanup(Cfg.PositiveFolder, "Pos");
             string negPath = Cleanup(Cfg.NegativeFolder, "Neg");
             MergeData(posPath, negPath);
+
+            Digitalize dgt = new Digitalize(Cfg);
+            Common.FolderTransport(Cfg.SupTextFolder, Cfg.SupDataFolder, dgt.Run);
+
             string dataStatus = string.Join("\t", Constants.SUP, Cfg.BatchName, Cfg.DataDescription);
             File.AppendAllText(Cfg.UsedDataFile, dataStatus);
         }

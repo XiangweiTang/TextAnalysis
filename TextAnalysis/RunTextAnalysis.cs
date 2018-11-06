@@ -17,7 +17,8 @@ namespace TextAnalysis
         }
 
         private void Init()
-        {            
+        {
+            Directory.CreateDirectory(Cfg.TmpFolder);
             Directory.CreateDirectory(Cfg.PythonScriptFolder);
             Directory.CreateDirectory(Cfg.NonSupTextFolder);
             Directory.CreateDirectory(Cfg.SupDataFolder);
@@ -42,27 +43,27 @@ namespace TextAnalysis
         }
 
         public void Run()
-        {            
-            AddNonSupData ansd = new AddNonSupData(Cfg);
-            ansd.Run();
+        {
+            //AddNonSupData ansd = new AddNonSupData(Cfg);
+            //ansd.Run();
 
-            AddSupData asd = new AddSupData(Cfg);
-            asd.Run();
+            //AddSupData asd = new AddSupData(Cfg);
+            //asd.Run();
 
-            TextClassificationTrain tct = new TextClassificationTrain(Cfg);
-            tct.Run();
+            //TextClassificationTrain tct = new TextClassificationTrain(Cfg);
+            //tct.Run();
 
-            TextClassificationEvaluate tce = new TextClassificationEvaluate(Cfg);
-            tce.Run();
+            //TextClassificationEvaluate tce = new TextClassificationEvaluate(Cfg);
+            //tce.Run();
 
-            TextClassificationPredict tcp = new TextClassificationPredict(Cfg);
-            tcp.Run();
+            //TextClassificationPredict tcp = new TextClassificationPredict(Cfg);
+            //tcp.Run();
 
-            Word2VecTrain wvt = new Word2VecTrain(Cfg);
-            wvt.Run();
+            //Word2VecTrain wvt = new Word2VecTrain(Cfg);
+            //wvt.Run();
 
-            Word2VecCalcSimilarity wvcs = new Word2VecCalcSimilarity(Cfg);
-            wvcs.Run();
+            //Word2VecCalcSimilarity wvcs = new Word2VecCalcSimilarity(Cfg);
+            //wvcs.Run();
         }
     }
 }

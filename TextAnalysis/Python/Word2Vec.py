@@ -11,15 +11,12 @@ import sys
 import argparse
 import random
 from tempfile import gettempdir
-#import zipfile
 
 import numpy as np
 from six.moves import urllib
 from six.moves import xrange
 import tensorflow as tf
 import sys
-
-# from tensorflow.contrib.tensorboard.plugins import projector
 
 dict_path=sys.argv[1]
 #Train file
@@ -28,6 +25,9 @@ input_file_name=sys.argv[2]
 test_path=sys.argv[3]
 #The output file path with similarities.
 similar_path=sys.argv[4]
+vocabulary_size=50000
+num_steps=200001
+grad_desc=0.2
 
 def read_to_word(filename):
 	with open(filename,'r',encoding='UTF-8') as f:
@@ -38,8 +38,6 @@ def read_to_word(filename):
 vocabulary=list(read_to_word(input_file_name))
 
 #	Build dictionary, replace rare words with UNK.
-vocabulary_size=50000
-num_steps=200001
 
 def build_dataset(words, n_words):
 	count=[['UNK',-1]]
@@ -154,7 +152,7 @@ with graph.as_default():
 	tf.summary.scalar('loss',loss)
 
 	with tf.name_scope('optimizer'):
-		optimizer=tf.train.GradientDescentOptimizer(0.2).minimize(loss)
+		optimizer=tf.train.GradientDescentOptimizer(grad_desc).minimize(loss)
 	
 	norm=tf.sqrt(tf.reduce_sum(tf.square(embeddings),1,keepdims=True))
 	normalized_embeddings=embeddings/norm
@@ -202,7 +200,7 @@ with tf.Session(graph=graph) as session:
 		top_k=20
 		nearest=(-final_sim[i,:]).argsort()[1:top_k+1]
 		similars= list( map(lambda x:final_sim[i,x],nearest))
-		line= valid_word+"\t1";
+		line= valid_word+" 1";
 		for k in xrange(top_k):
 			close_word=reversed_dictionary[nearest[k]]
 			line="%s\t%s %s"%(line,close_word, similars[k])

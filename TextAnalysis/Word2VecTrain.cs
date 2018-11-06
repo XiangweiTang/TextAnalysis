@@ -20,6 +20,8 @@ namespace TextAnalysis
             var supList = Directory.EnumerateFiles(Cfg.SupTextFolder, $"*.{Cfg.Locale}.txt").SelectMany(x => File.ReadLines(x));
             var nonsupList = Directory.EnumerateFiles(Cfg.NonSupTextFolder, $"*.{Cfg.Locale}.txt").SelectMany(x => File.ReadLines(x));
             File.WriteAllLines(Cfg.Word2VecTrainDatapath, supList.Concat(nonsupList));
+
+            Train();
         }
 
         private void Train()

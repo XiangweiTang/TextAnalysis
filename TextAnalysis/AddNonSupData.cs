@@ -20,8 +20,12 @@ namespace TextAnalysis
         public void Run()
         {
             Cleanup();
+
+            Digitalize digit = new Digitalize(Cfg);
+            digit.Run();
+
             string dataStatus = string.Join("\t", Constants.NONSUP, Cfg.BatchName, Cfg.DataDescription);
-            File.AppendAllText(Cfg.UsedDataFile, dataStatus);
+            File.AppendAllLines(Cfg.UsedDataFile, new List<string> { dataStatus });            
         }
 
         private void Cleanup()

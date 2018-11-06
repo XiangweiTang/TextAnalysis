@@ -28,7 +28,7 @@ namespace TextAnalysis
             Common.FolderTransport(Cfg.SupTextFolder, Cfg.SupDataFolder, dgt.Run);
 
             string dataStatus = string.Join("\t", Constants.SUP, Cfg.BatchName, Cfg.DataDescription);
-            File.AppendAllText(Cfg.UsedDataFile, dataStatus);
+            File.AppendAllLines(Cfg.UsedDataFile, new List<string> { dataStatus });
         }
 
         private string Cleanup(string inputFolder, string type)

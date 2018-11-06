@@ -12,10 +12,10 @@ namespace TextAnalysis
     {
         #region Input args
         public string WorkFolder { get; private set; } = ".\\";
-        public string NonlabeledFolder { get; private set; } = string.Empty;
+        public string NonlabeledFolder { get; private set; } = @"D:\private\DataSample\NonSup";
         public string NegativeFolder { get; private set; } = @"D:\public\tmp\Test\Neg";
         public string PositiveFolder { get; private set; } = @"D:\public\tmp\Test\Pos";
-        public string BatchName { get; private set; } = "Check_20181031";
+        public string BatchName { get; private set; } = "20181105_SUP";
         public string[] ValidIntervals { get; private set; } = { "一龟", "  " };
         public string Locale { get; private set; } = "CHS";
         public string PythonPath { get; private set; } = @"C:\ProgramData\Anaconda3\python.exe";
@@ -24,10 +24,11 @@ namespace TextAnalysis
         public bool AddLabeledData { get; private set; } = true;
         public bool AddNonLabeledData { get; private set; } = false;
         public bool RebuildDict { get; private set; } = true;
-        public string DataDescription { get; private set; } = "This is only a test.";
-        public int MaxVocab { get; private set; } = 10000;
+        public string DataDescription { get; private set; } = "Supervised data, 20181105";
+        public int MaxVocab { get; private set; } = 50000;
         public string TextClassificationTestPath { get; private set; } = @"C:\Users\v-xianta\Source\Repos\TextAnalysis\TextAnalysis\bin\Debug\Data\SupText\Check_20181031.Test.CHS.txt";
-        public string Word2VecTestPath { get; private set; } = string.Empty;
+        public string Word2VecTestPath { get; private set; } = @"D:\private\DataSample\W2vTest\Sim_Test.txt";
+        public string Word2VecKeyWordPath { get; private set; } = @"D:\private\Word2Vec\Test.txt";
         #endregion
 
         #region Internal generated args
@@ -42,9 +43,7 @@ namespace TextAnalysis
 
         public string UsedDataFile { get => Path.Combine(WorkFolder, "UsedData.txt"); }
         public string TmpFolder { get => Path.Combine(WorkFolder, "Tmp"); }
-        public string DataFolder { get => Path.Combine(WorkFolder, "Data"); }        
-        public string FileMappingPath { get => Path.Combine(DataFolder, "Mapping.txt"); }
-        public string TextFolder { get => Path.Combine(DataFolder, "Text"); }
+        public string DataFolder { get => Path.Combine(WorkFolder, "Data"); }  
         public string NonSupTextFolder { get => Path.Combine(DataFolder, "NonSupText"); }
         public string NonSupDigitFolder { get => Path.Combine(DataFolder, "NonSupDigit"); }
         public string SupLabelFolder { get => Path.Combine(DataFolder, "SupLabel"); }
@@ -57,12 +56,13 @@ namespace TextAnalysis
         public string TextClassificationTrainLabelPath { get => Path.Combine(DataFolder, $"{Constants.TRAIN}.{Locale}.label"); }
         public string TextClassificationDevDataPath { get => Path.Combine(DataFolder, $"{Constants.DEV}.{Locale}.data"); }
         public string TextClassificationDevLabelPath { get => Path.Combine(DataFolder, $"{Constants.DEV}.{Locale}.label"); }
-        public string TextClassificationResultPath { get => Path.Combine(WorkFolder, "TextClassificationResult.txt"); }
+        public string TextClassificationEvaluationResultPath { get => Path.Combine(WorkFolder, "TextClassificationEvaluationResult.txt"); }
+        public string TextClassificationPredictResultPath { get => Path.Combine(WorkFolder, "TextClassificationPredictResult.txt"); }
 
-        public string Word2VecKeyWordPath { get => Path.Combine(WorkFolder, "Keywords.txt"); }
         public string Word2VecSimilarityPath { get => Path.Combine(DataFolder, "Similarity.txt"); }
         public string Word2VecTrainDatapath { get => Path.Combine(DataFolder, $"Total.text"); }
-        public string Word2VecResultPath { get => Path.Combine(WorkFolder, "Word2VecResult.txt"); }
+        public string Word2VecResultDetailPath { get => Path.Combine(WorkFolder, "Word2VecDetailResult.txt"); }
+        public string Word2VecResultBriefPath { get => Path.Combine(WorkFolder, "Word2VecBriefResult.txt"); }
         #endregion
 
         public Config()

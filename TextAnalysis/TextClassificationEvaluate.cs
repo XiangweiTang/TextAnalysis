@@ -18,13 +18,14 @@ namespace TextAnalysis
         public void Run()
         {
             var batches = File.ReadLines(Cfg.UsedDataFile)
+                .Where(x => x[0] != '#')
                 .Select(x => x.Split('\t'))
                 .Where(x => x[0] == Constants.SUP)
                 .Select(x => x[1]);
             var resultList = batches.Select(x => Run(x)).ToList();
             foreach(string result in resultList)
                 Console.WriteLine(result);
-            File.WriteAllLines(Cfg.TextClassificationResultPath, resultList);
+            File.WriteAllLines(Cfg.TextClassificationEvaluationResultPath, resultList);
         }
 
         public string Run(string batchName)

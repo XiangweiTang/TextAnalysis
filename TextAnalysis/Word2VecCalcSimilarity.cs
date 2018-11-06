@@ -13,6 +13,7 @@ namespace TextAnalysis
         Config Cfg = new Config();
         public string TmpName = string.Empty;
         IEnumerable<Similarity> SimList = Enumerable.Empty<Similarity>();
+        List<string> BriefList = new List<string>();
         public Word2VecCalcSimilarity(Config cfg)
         {
             Cfg = cfg;
@@ -32,13 +33,20 @@ namespace TextAnalysis
 
             PrepareSimilarity();
 
-            string text = File.ReadAllText(postPath);
-            var wordList = Regex.Split(text, "\\s+");
+            var resultList = File.ReadLines(postPath).SelectMany(x => ProcessSingleLine(x));
+            
+            File.WriteAllLines(Cfg.Word2VecResultDetailPath, resultList);
+            File.WriteAllLines(Cfg.Word2VecResultBriefPath, BriefList);
+        }
 
-            var simResults = CalcSimilarity(wordList).ToArray();
-            var resultList = OutputResult(simResults);
 
-            File.WriteAllLines(Cfg.Word2VecResultPath, resultList);
+        private IEnumerable<string> ProcessSingleLine(string line)
+        {
+            var split = line.Split(' ');
+            var results = CalcSimilarity(split).ToArray();
+            double totalAvg = results.Average(x => x.Score);
+            BriefList.Add(totalAvg + "\t" + line);
+            return OutputResult(results);
         }
 
         private IEnumerable<SimResult> CalcSimilarity(string[] wordList)
@@ -75,6 +83,7 @@ namespace TextAnalysis
                     yield return $"\t{sResult.Output}";
                 }
             }
+            yield return string.Empty;
         }
 
         class Similarity

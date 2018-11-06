@@ -31,11 +31,11 @@ namespace TextAnalysis
             string preProcessPath = Path.Combine(Cfg.TmpFolder, $"{TmpName}.{Cfg.Locale}.pre");
             string wbrPath = Path.Combine(Cfg.TmpFolder, $"{TmpName}.{Cfg.Locale}.wbr");
             string postProcessPath = Path.Combine(Cfg.NonSupTextFolder, $"{Cfg.BatchName}.{Cfg.Locale}.txt");
-            NewDataProcessing ndp = new NewDataProcessing(Cfg);
+            DataProcessing dataProcessing = new DataProcessing(Cfg);
             File.WriteAllLines(rawPath, list);
-            ndp.PreProcessFile(rawPath, preProcessPath);
-            ndp.WordBreakFile(preProcessPath, wbrPath);
-            ndp.PostProcessFile(wbrPath, postProcessPath);
+            dataProcessing.PreProcessFile(rawPath, preProcessPath);
+            dataProcessing.WordBreakFile(preProcessPath, wbrPath);
+            dataProcessing.PostProcessFile(wbrPath, postProcessPath);
         }
     }
 }

@@ -7,10 +7,10 @@ using System.IO;
 
 namespace TextAnalysis
 {
-    class TrainTextClassification
+    class TextClassificationTrain
     {
         Config Cfg = new Config();
-        public TrainTextClassification(Config cfg)
+        public TextClassificationTrain(Config cfg)
         {
             Cfg = cfg;
         }

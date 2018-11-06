@@ -7,11 +7,11 @@ using System.IO;
 
 namespace TextAnalysis
 {
-    class CalcSimilarity
+    class Word2VecCalcSimilarity
     {
         Config Cfg = new Config();
         public string TmpName = string.Empty;
-        public CalcSimilarity(Config cfg)
+        public Word2VecCalcSimilarity(Config cfg)
         {
             Cfg = cfg;
             TmpName = Guid.NewGuid().ToString();
@@ -19,14 +19,14 @@ namespace TextAnalysis
 
         public void Run()
         {
-            NewDataProcessing ndp = new NewDataProcessing(Cfg);
+            DataProcessing dataProcessing = new DataProcessing(Cfg);
             string prePath = Path.Combine(Cfg.TmpFolder, $"{TmpName}.{Cfg.Locale}.pre");
             string wbrPath = Path.Combine(Cfg.TmpFolder, $"{TmpName}.{Cfg.Locale}.wbr");
             string postPath = Path.Combine(Cfg.TmpFolder, $"{TmpName}.{Cfg.Locale}.post");
 
-            ndp.PreProcessFile(Cfg.Word2VecTestPath, prePath);
-            ndp.WordBreakFile(prePath, wbrPath);
-            ndp.PostProcessFile(wbrPath, postPath);
+            dataProcessing.PreProcessFile(Cfg.Word2VecTestPath, prePath);
+            dataProcessing.WordBreakFile(prePath, wbrPath);
+            dataProcessing.PostProcessFile(wbrPath, postPath);
         }
 
         

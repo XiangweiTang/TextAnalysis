@@ -7,10 +7,10 @@ using System.IO;
 
 namespace TextAnalysis
 {
-    class TrainWord2Vec
+    class Word2VecTrain
     {
         Config Cfg = new Config();
-        public TrainWord2Vec(Config cfg)
+        public Word2VecTrain(Config cfg)
         {
             Cfg = cfg;
         }

@@ -13,8 +13,8 @@ namespace TextAnalysis
         {
             Config cfg = new Config();
             Init(cfg);
-            TrainTextClassification ttc = new TrainTextClassification(cfg);
-            ttc.Run();
+            TextClassificationTrain tct = new TextClassificationTrain(cfg);
+            tct.Run();
         }
 
         static void Init(Config cfg)

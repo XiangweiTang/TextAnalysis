@@ -8,10 +8,10 @@ using System.IO;
 
 namespace TextAnalysis
 {
-    class NewDataProcessing
+    class DataProcessing
     {
         Config Cfg = new Config();
-        public NewDataProcessing (Config cfg)
+        public DataProcessing (Config cfg)
         {
             Cfg = cfg;
         }

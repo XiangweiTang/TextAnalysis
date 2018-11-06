@@ -7,10 +7,10 @@ using System.IO;
 
 namespace TextAnalysis
 {
-    class EvaluateTextClassification
+    class TextClassificationEvaluate
     {
         Config Cfg = new Config();
-        public EvaluateTextClassification(Config cfg)
+        public TextClassificationEvaluate(Config cfg)
         {
             Cfg = cfg;
         }

@@ -7,11 +7,11 @@ using System.IO;
 
 namespace TextAnalysis
 {
-    class PredictTextClassification
+    class TextClassificationPredict
     {
         Config Cfg = new Config();
         string TmpName = string.Empty;
-        public PredictTextClassification(Config cfg)
+        public TextClassificationPredict(Config cfg)
         {
             Cfg = cfg;
             TmpName = Guid.NewGuid().ToString();
@@ -19,16 +19,16 @@ namespace TextAnalysis
 
         public void Run()
         {
-            NewDataProcessing ndp = new NewDataProcessing(Cfg);
+            DataProcessing dataProcessing = new DataProcessing(Cfg);
             TextToDigit t2d = new TextToDigit(Cfg);
             string prePath = Path.Combine(Cfg.TmpFolder, $"{TmpName}.{Cfg.Locale}.pre");
             string wbrPath = Path.Combine(Cfg.TmpFolder, $"{TmpName}.{Cfg.Locale}.wbr");
             string postPath = Path.Combine(Cfg.TmpFolder, $"{TmpName}.{Cfg.Locale}.post");
             string dataPath = Path.Combine(Cfg.TmpFolder, $"{TmpName}.{Cfg.Locale}.data");
             string resultPath = Path.Combine(Cfg.TmpFolder, $"{TmpName}.{Cfg.Locale}.result");
-            ndp.PreProcessFile(Cfg.TextClassificationTestPath, prePath);
-            ndp.WordBreakFile(prePath, wbrPath);
-            ndp.PostProcessFile(wbrPath, postPath);
+            dataProcessing.PreProcessFile(Cfg.TextClassificationTestPath, prePath);
+            dataProcessing.WordBreakFile(prePath, wbrPath);
+            dataProcessing.PostProcessFile(wbrPath, postPath);
             t2d.TextToDigitFile(postPath, dataPath);
 
             RunPredict(dataPath, resultPath);

@@ -49,20 +49,20 @@ namespace TextAnalysis
             AddSupData asd = new AddSupData(Cfg);
             asd.Run();
 
-            TrainTextClassification ttc = new TrainTextClassification(Cfg);
-            ttc.Run();
+            TextClassificationTrain tct = new TextClassificationTrain(Cfg);
+            tct.Run();
 
-            EvaluateTextClassification etc = new EvaluateTextClassification(Cfg);
-            etc.Run();
+            TextClassificationEvaluate tce = new TextClassificationEvaluate(Cfg);
+            tce.Run();
 
-            PredictTextClassification ptc = new PredictTextClassification(Cfg);
-            ptc.Run();
+            TextClassificationPredict tcp = new TextClassificationPredict(Cfg);
+            tcp.Run();
 
-            TrainWord2Vec twv = new TrainWord2Vec(Cfg);
-            twv.Run();
+            Word2VecTrain wvt = new Word2VecTrain(Cfg);
+            wvt.Run();
 
-            CalcSimilarity cs = new CalcSimilarity(Cfg);
-            cs.Run();
+            Word2VecCalcSimilarity wvcs = new Word2VecCalcSimilarity(Cfg);
+            wvcs.Run();
         }
     }
 }

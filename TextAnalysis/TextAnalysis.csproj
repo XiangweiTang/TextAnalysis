@@ -52,23 +52,20 @@
   <ItemGroup>
     <Compile Include="AddNonSupData.cs" />
     <Compile Include="AddSupData.cs" />
-    <Compile Include="CalcSimilarity.cs" />
+    <Compile Include="Word2VecCalcSimilarity.cs" />
     <Compile Include="Common.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="Constants.cs" />
-    <Compile Include="DataClean.cs" />
-    <Compile Include="EvaluateTextClassification.cs" />
+    <Compile Include="TextClassificationEvaluate.cs" />
     <Compile Include="Logger.cs" />
-    <Compile Include="NewDataProcessing.cs" />
-    <Compile Include="PredictTextClassification.cs" />
-    <Compile Include="PrepareTestData.cs" />
+    <Compile Include="DataProcessing.cs" />
+    <Compile Include="TextClassificationPredict.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="PrepareTrainData.cs" />
     <Compile Include="RunTextAnalysis.cs" />
     <Compile Include="TextToDigit.cs" />
-    <Compile Include="TrainTextClassification.cs" />
-    <Compile Include="TrainWord2Vec.cs" />
+    <Compile Include="TextClassificationTrain.cs" />
+    <Compile Include="Word2VecTrain.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

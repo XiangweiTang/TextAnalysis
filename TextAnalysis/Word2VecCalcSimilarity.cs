@@ -27,7 +27,7 @@ namespace TextAnalysis
             string wbrPath = Path.Combine(Cfg.TmpFolder, $"{TmpName}.{Cfg.Locale}.wbr");
             string postPath = Path.Combine(Cfg.TmpFolder, $"{TmpName}.{Cfg.Locale}.post");
 
-            dataProcessing.PreProcessFile(Cfg.Word2VecTestPath, prePath);
+            dataProcessing.PreProcessFile(Cfg.SimilarityTestPath, prePath);
             dataProcessing.WordBreakFile(prePath, wbrPath);
             dataProcessing.PostProcessFile(wbrPath, postPath);
 
@@ -63,7 +63,7 @@ namespace TextAnalysis
 
         private void PrepareSimilarity()
         {
-            var keywordList = File.ReadLines(Cfg.Word2VecKeyWordPath);
+            var keywordList = File.ReadLines(Cfg.SimilarityKeyWordPath);
             var valueList = File.ReadLines(Cfg.Word2VecSimilarityPath);
             SimList = keywordList.Zip(valueList, (x, y) => new Similarity(x, y)).ToList();
         }

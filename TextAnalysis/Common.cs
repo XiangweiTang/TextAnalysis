@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Diagnostics;
 using System.Reflection;
+using System.Xml;
 
 namespace TextAnalysis
 {
@@ -92,19 +93,6 @@ namespace TextAnalysis
             string args = string.Join(" ", scriptPath, inputFilePath, outputFilePath);
             RunFile(pythonPath, args);
         }
-
-        public static void RunBuildTextClassification(string trainDataPath, string trainLabelPath, string devDataPath, string devLabelPath, string modelPath, string pythonPath, string scriptPath)
-        {
-            string args = string.Join(" ", scriptPath, trainDataPath, trainLabelPath, devDataPath, devLabelPath, modelPath);
-            RunFile(pythonPath, args);
-        }
-
-        public static void RunPredict(string testDataPath, string predictResultPath, string pythonPath, string scriptPath, string workDir)
-        {
-            string args = string.Join(" ", scriptPath, testDataPath, predictResultPath);
-            RunFile(pythonPath, args, workDir);
-        }
-
         public static IEnumerable<string> ReadEmbed(string path)
         {
             Assembly asmb = Assembly.GetExecutingAssembly();
@@ -115,23 +103,34 @@ namespace TextAnalysis
                     yield return line;
             }
         }
-
-        public static byte[] GetEmbed(string path)
-        {
-            Assembly asmb = Assembly.GetExecutingAssembly();
-            using(Stream st = asmb.GetManifestResourceStream(path))
-            {
-                int n = Convert.ToInt32(st.Length);
-                using(BinaryReader br=new BinaryReader(st))
-                {
-                    return br.ReadBytes(n);
-                }
-            }
-        }
-
+        
         public static string GetFullPath(string relativePath)
         {
             return new DirectoryInfo(relativePath).FullName;
         }        
+
+        public static string GetXmlValue(this XmlNode node, string xpath, string attribute)
+        {            
+            XmlNode targetNode = node.SelectSingleNode(xpath);
+            if (string.IsNullOrWhiteSpace(attribute))
+                return targetNode.InnerText;
+            else
+                return targetNode.Attributes[attribute].Value;
+        }
+
+        public static bool GetXmlValueBool(this XmlNode node, string xpath, string attribute)
+        {
+            return bool.Parse(GetXmlValue(node, xpath, attribute));
+        }
+
+        public static double GetXmlValueDouble(this XmlNode node, string xpath, string attribute)
+        {
+            return double.Parse(GetXmlValue(node, xpath, attribute));
+        }
+
+        public static int GetXmlValueInt(this XmlNode node, string xpath, string attribute)
+        {
+            return int.Parse(GetXmlValue(node, xpath, attribute));
+        }
     }
 }

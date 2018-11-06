@@ -33,8 +33,8 @@ namespace TextAnalysis
             CreatePythons(Constants.RESTORE_MODEL);
             CreatePythons(Constants.WORD2VEC);
 
-            if (!File.Exists(Cfg.Word2VecKeyWordPath))
-                File.Create(Cfg.Word2VecKeyWordPath).Close();
+            if (!File.Exists(Cfg.SimilarityKeyWordPath))
+                File.Create(Cfg.SimilarityKeyWordPath).Close();
         }
 
         private void CreatePythons(string name)

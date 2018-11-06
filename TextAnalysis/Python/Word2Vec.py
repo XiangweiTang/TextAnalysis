@@ -119,7 +119,7 @@ valid_window=100
 def read_test(test_path):
 	with open(test_path,'r', encoding= 'UTF-8') as f:
 		for line in f:
-			yield dictionary[line.split()[1][:-1]]
+			yield dictionary[line.split()[1]]
 
 ex_list=list(read_test(test_path))
 valid_size=len(ex_list)
@@ -202,7 +202,7 @@ with tf.Session(graph=graph) as session:
 		top_k=20
 		nearest=(-final_sim[i,:]).argsort()[1:top_k+1]
 		similars= list( map(lambda x:final_sim[i,x],nearest))
-		line=valid_word
+		line= valid_word+"\t1";
 		for k in xrange(top_k):
 			close_word=reversed_dictionary[nearest[k]]
 			line="%s\t%s %s"%(line,close_word, similars[k])

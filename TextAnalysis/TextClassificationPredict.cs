@@ -20,7 +20,7 @@ namespace TextAnalysis
         public void Run()
         {
             DataProcessing dataProcessing = new DataProcessing(Cfg);
-            TextToDigit t2d = new TextToDigit(Cfg);
+            Digitalize digitalize = new Digitalize(Cfg);
             string prePath = Path.Combine(Cfg.TmpFolder, $"{TmpName}.{Cfg.Locale}.pre");
             string wbrPath = Path.Combine(Cfg.TmpFolder, $"{TmpName}.{Cfg.Locale}.wbr");
             string postPath = Path.Combine(Cfg.TmpFolder, $"{TmpName}.{Cfg.Locale}.post");
@@ -29,7 +29,7 @@ namespace TextAnalysis
             dataProcessing.PreProcessFile(Cfg.TextClassificationTestPath, prePath);
             dataProcessing.WordBreakFile(prePath, wbrPath);
             dataProcessing.PostProcessFile(wbrPath, postPath);
-            t2d.TextToDigitFile(postPath, dataPath);
+            digitalize.TextToDigitFile(postPath, dataPath);
 
             RunPredict(dataPath, resultPath);
             var list = File.ReadLines(resultPath).Zip(File.ReadLines(postPath), (x, y) => x + "\t" + y);

@@ -57,11 +57,12 @@ namespace TextAnalysis
         public string TextClassificationTrainLabelPath { get => Path.Combine(DataFolder, $"{Constants.TRAIN}.{Locale}.label"); }
         public string TextClassificationDevDataPath { get => Path.Combine(DataFolder, $"{Constants.DEV}.{Locale}.data"); }
         public string TextClassificationDevLabelPath { get => Path.Combine(DataFolder, $"{Constants.DEV}.{Locale}.label"); }
-        public string TextClassificationResultPath { get => Path.Combine(WorkFolder, "Result.txt"); }
+        public string TextClassificationResultPath { get => Path.Combine(WorkFolder, "TextClassificationResult.txt"); }
 
         public string Word2VecKeyWordPath { get => Path.Combine(WorkFolder, "Keywords.txt"); }
         public string Word2VecSimilarityPath { get => Path.Combine(DataFolder, "Similarity.txt"); }
         public string Word2VecTrainDatapath { get => Path.Combine(DataFolder, $"Total.text"); }
+        public string Word2VecResultPath { get => Path.Combine(WorkFolder, "Word2VecResult.txt"); }
         #endregion
 
         public Config()

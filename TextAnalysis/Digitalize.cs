@@ -7,11 +7,11 @@ using System.IO;
 
 namespace TextAnalysis
 {
-    class TextToDigit
+    class Digitalize
     {
         Dictionary<string, string> WordToDigitDict = new Dictionary<string, string>();
         Config Cfg = new Config();
-        public TextToDigit(Config cfg)
+        public Digitalize(Config cfg)
         {
             Cfg = cfg;
         }

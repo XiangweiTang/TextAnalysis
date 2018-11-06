@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using System.Text.RegularExpressions;
 
 namespace TextAnalysis
 {
@@ -11,6 +12,7 @@ namespace TextAnalysis
     {
         Config Cfg = new Config();
         public string TmpName = string.Empty;
+        IEnumerable<Similarity> SimList = Enumerable.Empty<Similarity>();
         public Word2VecCalcSimilarity(Config cfg)
         {
             Cfg = cfg;
@@ -27,8 +29,82 @@ namespace TextAnalysis
             dataProcessing.PreProcessFile(Cfg.Word2VecTestPath, prePath);
             dataProcessing.WordBreakFile(prePath, wbrPath);
             dataProcessing.PostProcessFile(wbrPath, postPath);
+
+            PrepareSimilarity();
+
+            string text = File.ReadAllText(postPath);
+            var wordList = Regex.Split(text, "\\s+");
+
+            var simResults = CalcSimilarity(wordList).ToArray();
+            var resultList = OutputResult(simResults);
+
+            File.WriteAllLines(Cfg.Word2VecResultPath, resultList);
         }
 
-        
+        private IEnumerable<SimResult> CalcSimilarity(string[] wordList)
+        {
+            foreach(Similarity sim in SimList)
+            {
+                var common = sim.SimDict.Keys.Intersect(wordList).ToArray();
+                if (common.Count() == 0)
+                    yield return new SimResult(sim.GroupId, sim.SimDict.First().Key, "<NA>", 0);
+                else
+                    yield return new SimResult(sim.GroupId, sim.SimDict.First().Key, common[0], sim.SimDict[common[0]]);                        
+            }
+        }
+
+        private void PrepareSimilarity()
+        {
+            var keywordList = File.ReadLines(Cfg.Word2VecKeyWordPath);
+            var valueList = File.ReadLines(Cfg.Word2VecSimilarityPath);
+            SimList = keywordList.Zip(valueList, (x, y) => new Similarity(x, y)).ToList();
+        }
+
+        private IEnumerable<string> OutputResult(SimResult[] results)
+        {
+            double totalAvg = results.Average(x => x.Score);
+            yield return $"The overall similarity is: {totalAvg}.";
+            yield return string.Empty;
+            var groups = results.GroupBy(x => x.GroupId);
+            foreach(var group in groups)
+            {
+                double currentAvg = group.Average(x => x.Score);
+                yield return $"The similarity of group {group.Key} is: {currentAvg}.";
+                foreach(SimResult sResult in group)
+                {
+                    yield return $"\t{sResult.Output}";
+                }
+            }
+        }
+
+        class Similarity
+        {
+            public string GroupId { get; private set; } = "Default";
+            public Dictionary<string, double> SimDict =>
+                ValueLine.Split('\t').ToDictionary(x => x.Split(' ')[0], x => double.Parse(x.Split(' ')[1]));
+            private string ValueLine = string.Empty;
+            public Similarity(string keywordLine, string valueLine)
+            {
+                GroupId = keywordLine.Split('\t')[0];
+                ValueLine = valueLine;
+            }
+        }
+
+        class SimResult
+        {
+            public string GroupId { get; }
+            public string KeyWord { get; }
+            public string MatchWord { get; }
+            public double Score { get; }
+            public SimResult(string groupId, string keyWord, string matchWord, double score)
+            {
+                GroupId = groupId;
+                KeyWord = keyWord;
+                MatchWord = matchWord;
+                Score = score;
+            }
+
+            public string Output => string.Join(" ", KeyWord, MatchWord, Score);
+        }
     }
 }

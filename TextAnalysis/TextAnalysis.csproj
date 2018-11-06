@@ -63,7 +63,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RunTextAnalysis.cs" />
-    <Compile Include="TextToDigit.cs" />
+    <Compile Include="Digitalize.cs" />
     <Compile Include="TextClassificationTrain.cs" />
     <Compile Include="Word2VecTrain.cs" />
   </ItemGroup>

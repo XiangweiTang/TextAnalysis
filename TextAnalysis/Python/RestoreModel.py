@@ -12,7 +12,7 @@ def evaluate(test_data_path, test_label_path, model_path, output_path, pad_index
 
 	result=model.evaluate(test_data, test_labl)
 	with open(output_path,'w+',encoding='UTF-8') as f:
-		f.write(result)
+		f.write(str(result[1]))
 	f.close()
 
 def predict(test_data_path, model_path, output_path, pad_index=0, max_length=256):

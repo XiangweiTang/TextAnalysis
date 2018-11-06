@@ -29,7 +29,7 @@ namespace TextAnalysis
             dataProcessing.PreProcessFile(Cfg.TextClassificationTestPath, prePath);
             dataProcessing.WordBreakFile(prePath, wbrPath);
             dataProcessing.PostProcessFile(wbrPath, postPath);
-            digitalize.TextToDigitFile(postPath, dataPath);
+            digitalize.Run(postPath, dataPath);
 
             RunPredict(dataPath, resultPath);
             var list = File.ReadLines(resultPath).Zip(File.ReadLines(postPath), (x, y) => x + "\t" + y);

@@ -18,33 +18,58 @@ namespace TextAnalysis
 
         public void Run()
         {
+            Prepare();
+            Common.FolderTransport(Cfg.SupTextFolder, Cfg.SupDataFolder, TextToDigit);
+        }
+
+        public void Run(string wordPath, string dataPath)
+        {
+            Prepare();
+            TextToDigit(wordPath, dataPath);
+        }
+
+        private void Prepare()
+        {
             if (Cfg.RebuildDict)
             {
                 var fileList = Directory.EnumerateFiles(Cfg.NonSupTextFolder, $"*.{Cfg.Locale}.txt")
                     .Concat(Directory.EnumerateFiles(Cfg.SupTextFolder, $"*.{Cfg.Locale}.txt"));
-                RebuildDictionary(fileList, Cfg.DictPath, Cfg.MaxVocab);                
+                RebuildDictionary(fileList, Cfg.DictPath, Cfg.MaxVocab);
             }
-            Common.FolderTransport(Cfg.SupTextFolder, Cfg.SupDataFolder, TextToDigitFile);
+            BuildDictionary();
+        }
+
+        private void BuildDictionary()
+        {
+            WordToDigitDict = File.ReadLines(Cfg.DictPath).ToDictionary(x => x.Split('\t')[0], x => x.Split('\t')[1]);
         }
 
         private void RebuildDictionary(IEnumerable<string> fileList, string outputPath, int maxVocab)
         {
-            var tail = fileList.SelectMany(x => x.Split(' ')).GroupBy(x => x)
+            var tail = fileList.SelectMany(x=>File.ReadLines(x)).SelectMany(x => x.Split(' ')).GroupBy(x => x)
                 .OrderByDescending(x => x.Count())
                 .Select(x => x.Key);
             var list = Constants.HEAD.Concat(tail).Take(maxVocab).Select((x, y) => x + "\t" + y);
             File.WriteAllLines(outputPath, list);
         }
 
-        public void TextToDigitFile(string wordPath, string dataPath)
+        private void TextToDigit(string wordPath, string dataPath)
         {
             var list = File.ReadLines(wordPath)
                 .Select(x => x
-                .Split(' ')
-                .ArraySkip(256 - x.Length)
+                .Split(' '))
+                .Select(x=>x
+                .ArraySkip(x.Length - 256)
                 .Select(y => WordToDigitDict.ContainsKey(y) ? WordToDigitDict[y] : WordToDigitDict[Constants.UNK]))
                 .Select(x => string.Join(" ", x));
             File.WriteAllLines(dataPath, list);
+        }
+
+        private bool DoNothing(string[] list)
+        {
+            if (list.Length >= 256)
+                ;
+            return true;
         }
     }
 }

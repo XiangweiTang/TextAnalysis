@@ -1,14 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<TextAnalysis Locale="">
-  <NewData DataBatchName="" DataDescription="">
-    <NonLabeledData Add="false" Path=""/>
-    <LabeledData Add="false" PosPath="" NegPath=""/>
+<TextAnalysis Locale="CHS">
+  <NewData DataBatchName="WebScrape_20181106" DataDescription="The non labeled data from Baidu search.">
+    <NonLabeledData Add="false" FolderPath="D:\private\DataSample\NonSup"/>
+    <LabeledData Add="false" PosFolderPath="D:\private\DataSample\Pos" NegFolderPath="D:\private\DataSample\Neg"/>
   </NewData>
-  <Train TextClassification="false" Word2Vec="false"/>
+  <Train TextClassification="false" Word2Vec="false" KeywordPath="Keyword.txt"/>
   <Test>
-    <Evaluate Run="false" PosPath="" NegPath=""/>
-    <Predict Run="false" TestFilePath=""/>
-    <Similarity Run="false" TestFilePath="" KeywordPath=""/>
+    <Evaluate Run="false" DataFilePath="C:\Users\v-xianta\Source\Repos\TextAnalysis\TextAnalysis\bin\Debug\Data\SupText\Taobao_20181106.Test.CHS.txt" LabelFilePath="C:\Users\v-xianta\Source\Repos\TextAnalysis\TextAnalysis\bin\Debug\Data\SupLabel\Taobao_20181106.Test.CHS.txt"/>
+    <Predict Run="false" TestFilePath="C:\Users\v-xianta\Source\Repos\TextAnalysis\TextAnalysis\bin\Debug\Data\SupText\Taobao_20181106.Test.CHS.txt"/>
+    <Similarity Run="true" TestFilePath="D:\private\DataSample\W2vTest\Sim_Test.txt"/>
   </Test>
   <ValidIntervals>
     <Interval Locale="CHS" Value="一龟"/>
@@ -16,5 +16,5 @@
     <Interval Locale="ENU" Value="AZ"/>
   </ValidIntervals>
   <Model TestRate="0.1" DevRate="0.1" MaxVocab="50000" RebuildDict="true"/>
-  <Python Path="C:\Users\tangx\AppData\Local\Programs\Python\Python36\python.exe"/>
+  <Python Path="C:\ProgramData\Anaconda3\python.exe"/>
 </TextAnalysis>

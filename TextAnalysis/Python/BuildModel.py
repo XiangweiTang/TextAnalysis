@@ -27,7 +27,7 @@ dev_label=dp.create_label(dev_label_path)
 #word_index_dict=dp.create_dict(dict_path)
 #index_word_dict=dict([(value, key) for (key,value) in word_index_dict.items()])
 
-vocab_size=10000
+vocab_size=50000
 
 train_data=keras.preprocessing.sequence.pad_sequences(train_data,value=pad_index,padding='post',maxlen=max_length)
 dev_data=keras.preprocessing.sequence.pad_sequences(dev_data,value=pad_index,padding="post",maxlen=max_length)

@@ -36,6 +36,19 @@ namespace TextAnalysis
             var list = File.ReadLines(inputFilePath).Select(x => RegCleanUp(x)).Select(x => CharCleanUp(x));
             File.WriteAllLines(outputFilePath, list);
         }
+
+        public string ProcessFile(string inputPath)
+        {
+            string tmpName = Guid.NewGuid().ToString();
+            string prePath = Path.Combine(Cfg.TmpFolder, $"{tmpName}.pre");
+            string wbrPath = Path.Combine(Cfg.TmpFolder, $"{tmpName}.wbr");
+            string postPath = Path.Combine(Cfg.TmpFolder, $"{tmpName}.post");
+            PreProcessFile(inputPath, prePath);
+            WordBreakFile(prePath, wbrPath);
+            PostProcessFile(wbrPath, postPath);
+            return postPath;
+        }
+
         private string RegCleanUp(string s)
         {
             string removeTag = TagReg.Replace(s.ToLower(), " ");

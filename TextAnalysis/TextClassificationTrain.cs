@@ -20,6 +20,8 @@ namespace TextAnalysis
             PrepareData(Constants.DEV);
             PrepareData(Constants.TRAIN);
             Train();
+            TextClassificationEvaluate eva = new TextClassificationEvaluate(Cfg);
+            eva.RunBatches();
         }
 
         private void PrepareData(string type)

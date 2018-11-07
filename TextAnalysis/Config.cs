@@ -26,8 +26,8 @@ namespace TextAnalysis
         public bool RunPredict { get; private set; } = false;
         public string PredictTestPath { get; private set; } = @"C:\Users\v-xianta\Source\Repos\TextAnalysis\TextAnalysis\bin\Debug\Data\SupText\Check_20181031.Test.CHS.txt";
         public bool RunEvaluate { get; private set; } = false;
-        public string EvaluatePosPath { get; private set; } = string.Empty;
-        public string EvaluateNegPath { get; private set; } = string.Empty;
+        public string EvaluateDataPath { get; private set; } = string.Empty;
+        public string EvaluateLabelPath { get; private set; } = string.Empty;
         public bool RunSimilarity { get; private set; } = false;
         public string SimilarityTestPath { get; private set; } = @"D:\private\DataSample\W2vTest\Sim_Test.txt";
         public string SimilarityKeyWordPath { get; private set; } = @"D:\private\Word2Vec\Test.txt";
@@ -69,13 +69,13 @@ namespace TextAnalysis
         public string TextClassificationTrainLabelPath { get => Path.Combine(DataFolder, $"{Constants.TRAIN}.{Locale}.label"); }
         public string TextClassificationDevDataPath { get => Path.Combine(DataFolder, $"{Constants.DEV}.{Locale}.data"); }
         public string TextClassificationDevLabelPath { get => Path.Combine(DataFolder, $"{Constants.DEV}.{Locale}.label"); }
-        public string TextClassificationEvaluationResultPath { get => Path.Combine(WorkFolder, "TextClassificationEvaluationResult.txt"); }
-        public string TextClassificationPredictResultPath { get => Path.Combine(WorkFolder, "TextClassificationPredictResult.txt"); }
+        public string EvaluateResultPath { get => Path.Combine(WorkFolder, "Evaluate.txt"); }
+        public string PredictResultPath { get => Path.Combine(WorkFolder, "Predict.txt"); }
 
         public string Word2VecSimilarityPath { get => Path.Combine(DataFolder, $"Similarity.{Locale}.txt"); }
         public string Word2VecTrainDatapath { get => Path.Combine(DataFolder, $"Total.text"); }
-        public string Word2VecResultDetailPath { get => Path.Combine(WorkFolder, "Word2VecDetailResult.txt"); }
-        public string Word2VecResultBriefPath { get => Path.Combine(WorkFolder, "Word2VecBriefResult.txt"); }
+        public string SimDetailPath { get => Path.Combine(WorkFolder, "SimDetail.txt"); }
+        public string SimBriefPath { get => Path.Combine(WorkFolder, "SimBrief.txt"); }
         #endregion
 
         public Config()
@@ -96,26 +96,26 @@ namespace TextAnalysis
             DataDescription = xDoc.GetXmlValue("TextAnalysis/NewData", "DataDescription");
 
             AddNonLabeledData = xDoc.GetXmlValueBool("TextAnalysis/NewData/NonLabeledData", "Add");
-            NonlabeledFolder = xDoc.GetXmlValue("TextAnalysis/NewData/NonLabeledData", "Path");
+            NonlabeledFolder = xDoc.GetXmlValue("TextAnalysis/NewData/NonLabeledData", "FolderPath");
             AddLabeledData= xDoc.GetXmlValueBool("TextAnalysis/NewData/LabeledData", "Add");
-            PositiveFolder = xDoc.GetXmlValue("TextAnalysis/NewData/LabeledData", "PosPath");
-            NegativeFolder = xDoc.GetXmlValue("TextAnalysis/NewData/LabeledData", "NegPath");
+            PositiveFolder = xDoc.GetXmlValue("TextAnalysis/NewData/LabeledData", "PosFolderPath");
+            NegativeFolder = xDoc.GetXmlValue("TextAnalysis/NewData/LabeledData", "NegFolderPath");
             #endregion
 
             #region Train
             TrainTextClassification = xDoc.GetXmlValueBool("TextAnalysis/Train", "TextClassification");
             TrainWord2Vec = xDoc.GetXmlValueBool("TextAnalysis/Train", "Word2Vec");
+            SimilarityKeyWordPath = xDoc.GetXmlValue("TextAnalysis/Train", "KeywordPath");
             #endregion
 
             #region Test
             RunEvaluate = xDoc.GetXmlValueBool("TextAnalysis/Test/Evaluate", "Run");
-            EvaluatePosPath = xDoc.GetXmlValue("TextAnalysis/Test/Evaluate", "PosPath");
-            EvaluateNegPath = xDoc.GetXmlValue("TextAnalysis/Test/Evaluate", "NegPath");
+            EvaluateDataPath = xDoc.GetXmlValue("TextAnalysis/Test/Evaluate", "DataFilePath");
+            EvaluateLabelPath = xDoc.GetXmlValue("TextAnalysis/Test/Evaluate", "LabelFilePath");
             RunPredict = xDoc.GetXmlValueBool("TextAnalysis/Test/Predict", "Run");
             PredictTestPath = xDoc.GetXmlValue("TextAnalysis/Test/Predict", "TestFilePath");
             RunSimilarity = xDoc.GetXmlValueBool("TextAnalysis/Test/Similarity", "Run");
             SimilarityTestPath = xDoc.GetXmlValue("TextAnalysis/Test/Similarity", "TestFilePath");
-            SimilarityKeyWordPath=xDoc.GetXmlValue("TextAnalysis/Test/Similarity", "KeywordPath");
             #endregion
 
             #region Intevals

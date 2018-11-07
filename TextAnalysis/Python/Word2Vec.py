@@ -25,9 +25,9 @@ input_file_name=sys.argv[2]
 test_path=sys.argv[3]
 #The output file path with similarities.
 similar_path=sys.argv[4]
-vocabulary_size=50000
-num_steps=200001
-grad_desc=0.2
+vocabulary_size=10000
+num_steps=100001
+grad_desc=1
 
 def read_to_word(filename):
 	with open(filename,'r',encoding='UTF-8') as f:

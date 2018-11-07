@@ -17,7 +17,7 @@ namespace TextAnalysis
         {
             T[] array = collection.ToArray();
             int n = array.Length;
-            for(int i = 0; i < n; i++)
+            for (int i = 0; i < n; i++)
             {
                 int j = R.Next(n);
                 T t = array[i];
@@ -63,7 +63,7 @@ namespace TextAnalysis
             return outputArray;
         }
 
-        public static void RunFile(string filePath, string args, string workDir="", bool newWindow = false)
+        public static void RunFile(string filePath, string args, string workDir = "", bool newWindow = false)
         {
             Process proc = new Process();
             proc.StartInfo.FileName = filePath;
@@ -79,7 +79,7 @@ namespace TextAnalysis
         public delegate void ProcessFile(string inputFilePath, string outputFilePath);
         public static void FolderTransport(string inputFolder, string outputFolder, ProcessFile pf)
         {
-            foreach(string inputFilePath in Directory.EnumerateFiles(inputFolder))
+            foreach (string inputFilePath in Directory.EnumerateFiles(inputFolder))
             {
                 Console.WriteLine("Processing " + inputFilePath);
                 string fileName = inputFilePath.Split('\\').Last();
@@ -96,21 +96,21 @@ namespace TextAnalysis
         public static IEnumerable<string> ReadEmbed(string path)
         {
             Assembly asmb = Assembly.GetExecutingAssembly();
-            using(StreamReader sr=new StreamReader(asmb.GetManifestResourceStream(path)))
+            using (StreamReader sr = new StreamReader(asmb.GetManifestResourceStream(path)))
             {
                 string line;
                 while ((line = sr.ReadLine()) != null)
                     yield return line;
             }
         }
-        
+
         public static string GetFullPath(string relativePath)
         {
             return new DirectoryInfo(relativePath).FullName;
-        }        
+        }
 
         public static string GetXmlValue(this XmlNode node, string xpath, string attribute)
-        {            
+        {
             XmlNode targetNode = node.SelectSingleNode(xpath);
             if (string.IsNullOrWhiteSpace(attribute))
                 return targetNode.InnerText;
@@ -131,6 +131,20 @@ namespace TextAnalysis
         public static int GetXmlValueInt(this XmlNode node, string xpath, string attribute)
         {
             return int.Parse(GetXmlValue(node, xpath, attribute));
+        }
+
+        public static string RunScripts(Config cfg, string scriptPath, params string[] args)
+        {
+            string outputPath = cfg.TmpFilePath();
+            string argString = scriptPath + " " + string.Join(" ", args) + " " + outputPath;
+            RunFile(cfg.PythonPath, argString);
+            return outputPath;
+        }
+
+        public static string TmpFilePath(this Config cfg)
+        {
+            string tmpName = Guid.NewGuid().ToString();
+            return Path.Combine(cfg.TmpFolder, tmpName + ".txt");
         }
     }
 }

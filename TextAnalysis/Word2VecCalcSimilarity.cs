@@ -35,8 +35,8 @@ namespace TextAnalysis
 
             var resultList = File.ReadLines(postPath).SelectMany(x => ProcessSingleLine(x));
             
-            File.WriteAllLines(Cfg.Word2VecResultDetailPath, resultList);
-            File.WriteAllLines(Cfg.Word2VecResultBriefPath, BriefList);
+            File.WriteAllLines(Cfg.SimDetailPath, resultList);
+            File.WriteAllLines(Cfg.SimBriefPath, BriefList);
         }
 
 

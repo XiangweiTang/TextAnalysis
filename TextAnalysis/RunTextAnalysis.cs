@@ -47,26 +47,47 @@ namespace TextAnalysis
 
         public void Run()
         {
-            //AddNonSupData ansd = new AddNonSupData(Cfg);
-            //ansd.Run();
+            if (Cfg.AddNonLabeledData)
+            {
+                AddNonSupData ansd = new AddNonSupData(Cfg);
+                ansd.Run();
+            }
 
-            //AddSupData asd = new AddSupData(Cfg);
-            //asd.Run();
+            if (Cfg.AddLabeledData)
+            {
+                AddSupData asd = new AddSupData(Cfg);
+                asd.Run();
+            }
 
-            //TextClassificationTrain tct = new TextClassificationTrain(Cfg);
-            //tct.Run();
+            if (Cfg.TrainTextClassification)
+            {
+                TextClassificationTrain tct = new TextClassificationTrain(Cfg);
+                tct.Run();
+            }
 
-            //TextClassificationEvaluate tce = new TextClassificationEvaluate(Cfg);
-            //tce.Run();
+            if (Cfg.RunEvaluate)
+            {
+                TextClassificationEvaluate tce = new TextClassificationEvaluate(Cfg);
+                tce.Run();
+            }
 
-            //TextClassificationPredict tcp = new TextClassificationPredict(Cfg);
-            //tcp.Run();
+            if (Cfg.RunPredict)
+            {
+                TextClassificationPredict tcp = new TextClassificationPredict(Cfg);
+                tcp.Run();
+            }
 
-            //Word2VecTrain wvt = new Word2VecTrain(Cfg);
-            //wvt.Run();
+            if (Cfg.TrainWord2Vec)
+            {
+                Word2VecTrain wvt = new Word2VecTrain(Cfg);
+                wvt.Run();
+            }
 
-            //Word2VecCalcSimilarity wvcs = new Word2VecCalcSimilarity(Cfg);
-            //wvcs.Run();
+            if (Cfg.RunSimilarity)
+            {
+                Word2VecCalcSimilarity wvcs = new Word2VecCalcSimilarity(Cfg);
+                wvcs.Run();
+            }
         }
     }
 }

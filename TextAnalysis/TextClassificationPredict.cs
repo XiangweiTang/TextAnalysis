@@ -33,7 +33,7 @@ namespace TextAnalysis
 
             RunPredict(dataPath, resultPath);
             var list = File.ReadLines(resultPath).Zip(File.ReadLines(postPath), (x, y) => x + "\t" + y);
-            File.WriteAllLines(Cfg.TextClassificationPredictResultPath, list);
+            File.WriteAllLines(Cfg.PredictResultPath, list);
         }
 
         private void RunPredict(string inputPath, string outputPath)

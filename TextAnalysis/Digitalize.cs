@@ -28,6 +28,15 @@ namespace TextAnalysis
             TextToDigit(wordPath, dataPath);
         }
 
+        public string Run(string wordPath)
+        {
+            string tmpName = Guid.NewGuid().ToString();
+            string dataPath = Path.Combine(Cfg.TmpFolder, $"{tmpName}.digit");
+            Prepare();
+            TextToDigit(wordPath, dataPath);
+            return dataPath;
+        }
+
         private void Prepare()
         {
             if (Cfg.RebuildDict)
